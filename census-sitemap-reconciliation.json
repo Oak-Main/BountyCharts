@@ -1,0 +1,82 @@
+{
+  "checkedAt": "2026-10-03T12:19:13.308Z",
+  "sitemap": "C:\\Users\\Dell\\work\\BountyCharts\\site\\sitemap.xml",
+  "ratePerSec": 1,
+  "entries": 9,
+  "live": 9,
+  "missing404": 0,
+  "rows": [
+    {
+      "url": "https://bountycharts.com/",
+      "status": 200,
+      "live": true,
+      "finalUrl": "https://bountycharts.com/",
+      "error": null,
+      "action": "keep"
+    },
+    {
+      "url": "https://bountycharts.com/how-to-price-a-card-collection",
+      "status": 200,
+      "live": true,
+      "finalUrl": "https://bountycharts.com/how-to-price-a-card-collection",
+      "error": null,
+      "action": "keep"
+    },
+    {
+      "url": "https://bountycharts.com/riftbound-card-price-guide",
+      "status": 200,
+      "live": true,
+      "finalUrl": "https://bountycharts.com/riftbound-card-price-guide",
+      "error": null,
+      "action": "keep"
+    },
+    {
+      "url": "https://bountycharts.com/card-grading-guide",
+      "status": 200,
+      "live": true,
+      "finalUrl": "https://bountycharts.com/card-grading-guide",
+      "error": null,
+      "action": "keep"
+    },
+    {
+      "url": "https://bountycharts.com/selling-fees-comparison",
+      "status": 200,
+      "live": true,
+      "finalUrl": "https://bountycharts.com/selling-fees-comparison",
+      "error": null,
+      "action": "keep"
+    },
+    {
+      "url": "https://bountycharts.com/what-is-the-metagame",
+      "status": 200,
+      "live": true,
+      "finalUrl": "https://bountycharts.com/what-is-the-metagame",
+      "error": null,
+      "action": "keep"
+    },
+    {
+      "url": "https://bountycharts.com/chase-cards-explained",
+      "status": 200,
+      "live": true,
+      "finalUrl": "https://bountycharts.com/chase-cards-explained",
+      "error": null,
+      "action": "keep"
+    },
+    {
+      "url": "https://bountycharts.com/card-condition-guide",
+      "status": 200,
+      "live": true,
+      "finalUrl": "https://bountycharts.com/card-condition-guide",
+      "error": null,
+      "action": "keep"
+    },
+    {
+      "url": "https://bountycharts.com/sealed-vs-singles",
+      "status": 200,
+      "live": true,
+      "finalUrl": "https://bountycharts.com/sealed-vs-singles",
+      "error": null,
+      "action": "keep"
+    }
+  ]
+}
