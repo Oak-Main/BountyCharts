@@ -265,6 +265,41 @@ class TheDataFileIsAWellFormedCardList(unittest.TestCase):
             "https://tcgcsv.com/tcgplayer/3/24831/prices")
 
 
+class TheCleanUrlResolvesWithoutARedirectRule(unittest.TestCase):
+    """The set URL must be /sets/<slug>, with no rewrite rule.
+
+    An earlier version of the builder wrote "/sets/<slug> /sets/<slug>.html
+    200" into site/_redirects, expecting Pages not to resolve the extensionless
+    path. It does, and the rule made things worse: Pages canonicalises a .html
+    path back to its clean form with a 308, so the rewrite sent /sets/<slug>
+    to /sets/<slug>.html, which Pages redirected straight back. A 308 loop,
+    seen on the preview deployment for this branch.
+
+    Pages' automatic HTML handling serves /sets/<slug> from
+    site/sets/<slug>.html on its own, exactly as it serves /sealed-vs-singles
+    from site/sealed-vs-singles.html.
+    """
+
+    def test_there_is_no_set_rule_in_the_redirects_file(self):
+        redirects = (ROOT / "site" / "_redirects").read_text(encoding="utf-8")
+        offenders = [line.strip() for line in redirects.splitlines()
+                     if line.strip().startswith("/sets/")]
+        self.assertEqual(offenders, [],
+                         "a /sets/ rewrite re-creates a 308 redirect loop")
+
+    def test_the_builder_refuses_to_build_with_one(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = copy_repo(pathlib.Path(tmp))
+            redirects = root / "site" / "_redirects"
+            redirects.write_text(
+                redirects.read_text(encoding="utf-8")
+                + "/sets/delta-reign  /sets/delta-reign.html  200\n",
+                encoding="utf-8")
+            result = build_in(root)
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("redirect loop", result.stdout)
+
+
 class TheReleaseDayJobRunsAtTheRightHour(unittest.TestCase):
     """Fri Nov 6 2026 06:00 America/Los_Angeles is 14:00 UTC.
 
