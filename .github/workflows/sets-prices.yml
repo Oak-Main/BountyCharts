@@ -1,0 +1,86 @@
+name: Set prices
+
+# Keeps the set pages' price columns current.
+#
+# The prices come from TCGCSV, which mirrors TCGplayer's catalogue as one
+# JSON file per set ("group"). SetSealed's nightly ingest reads the same
+# files, so the two sites cannot publish different numbers for the same
+# product. See scripts/fetch_tcgcsv.py for the shared URL, the shared
+# one-row-per-product rule, and the shared cents conversion.
+#
+# This workflow never merges and never deploys. It refreshes the data file,
+# renders the pages, and opens (or updates) a DRAFT pull request. Merging is
+# the owner's call, and a merge to main is what triggers the deploy.
+
+on:
+  schedule:
+    # Release day: 06:00 America/Los_Angeles on Friday 2026-11-06.
+    #
+    # US daylight time ended on 2026-11-01, so Los Angeles is on PST
+    # (UTC-8) on release day, not PDT (UTC-7): 06:00 local is 14:00 UTC.
+    # Using 13:00 UTC would run the job an hour early, before TCGCSV's
+    # nightly refresh lands.
+    - cron: "0 14 6 11 *"
+
+    # Nightly, 21:30 UTC. The same slot SetSealed's TCGCSV ingest runs in
+    # ("30 21 * * *" in its wrangler.jsonc), so both sites read the same
+    # refreshed file inside the same window and stay in agreement.
+    - cron: "30 21 * * *"
+
+  workflow_dispatch:
+    inputs:
+      set:
+        description: "Set slug to refresh (blank = every set)"
+        required: false
+        default: ""
+
+concurrency:
+  group: set-prices
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch TCGCSV prices
+        run: python3 scripts/fetch_tcgcsv.py
+
+      - name: Render the set pages
+        run: python3 scripts/build_sets.py
+
+      - name: Validate site
+        run: python3 scripts/validate_site.py
+
+      - name: Test the gate
+        run: python3 -m unittest discover -s tests -v
+
+      # A draft PR, never a merge and never a deploy. If the refresh found
+      # no change, this action closes out without opening anything.
+      - name: Open a draft pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: chore/set-prices
+          delete-branch: false
+          commit-message: "chore(sets): refresh TCGCSV prices"
+          title: "chore(sets): refresh TCGCSV prices"
+          body: |
+            Automated price refresh for the set pages.
+
+            Prices come from TCGCSV, the same source SetSealed's nightly
+            ingest reads, so the two sites agree on any product they both
+            publish. The data file carries the source URL and the UTC
+            retrieval timestamp for every value; the page shows the same
+            timestamp as its as-of stamp.
+
+            This is a draft. Merging it is the owner's decision.
+          draft: true
+          add-paths: |
+            data/sets
+            site/sets
+            site/sitemap.xml
+            site/_redirects

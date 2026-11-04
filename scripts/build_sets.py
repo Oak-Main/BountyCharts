@@ -1,0 +1,398 @@
+#!/usr/bin/env python3
+"""
+Render the set pages in site/sets/ from the data files in data/sets/.
+
+Run:
+    python3 scripts/build_sets.py
+
+Standard library only, matching the rest of the repo.
+
+Three things happen here, and only these three:
+
+  1. Every data/sets/<slug>.json is rendered through templates/set.html into
+     site/sets/<slug>.html.
+
+  2. site/sitemap.xml is rewritten so that a set appears in it only when its
+     data file has at least one card row. An empty data file still renders a
+     page (a set that exists but has no prices yet), but it is deliberately
+     kept out of the sitemap rather than advertised as an indexable page with
+     nothing on it.
+
+  3. site/_redirects gets one clean-URL rewrite per set, so /sets/<slug>
+     resolves whether or not Cloudflare Pages' automatic HTML handling is on.
+
+The page carries no prices of its own. Prices live in the data file and are
+refreshed by scripts/fetch_tcgcsv.py, which reads the same TCGCSV files the
+SetSealed daily job reads, so the two sites cannot disagree about a price.
+"""
+
+from __future__ import annotations
+
+import argparse
+import html
+import json
+import pathlib
+import re
+import sys
+from datetime import datetime, timezone
+
+ROOT = pathlib.Path(__file__).resolve().parent.parent
+TEMPLATES = ROOT / "templates"
+DATA = ROOT / "data" / "sets"
+SITE = ROOT / "site"
+SETS_OUT = SITE / "sets"
+
+SITE_URL = "https://bountycharts.com"
+
+TEMPLATE = TEMPLATES / "set.html"
+
+
+def configure(root: pathlib.Path) -> None:
+    """Point the builder at a different tree.
+
+    The tests copy the repo into a temporary directory and rebuild there, so
+    they never touch the working site/ while proving the sitemap gating.
+    """
+    global ROOT, TEMPLATES, DATA, SITE, SETS_OUT, TEMPLATE
+    ROOT = pathlib.Path(root)
+    TEMPLATES = ROOT / "templates"
+    DATA = ROOT / "data" / "sets"
+    SITE = ROOT / "site"
+    SETS_OUT = SITE / "sets"
+    TEMPLATE = TEMPLATES / "set.html"
+
+
+# ---------------------------------------------------------------------------
+# A very small template language.
+#
+#   {{ name }}                 a value, HTML-escaped
+#   {{#if name}} ... {{/if}}   a block, taken when the value is truthy
+#   {{#unless name}} ... {{/unless}}
+#   {{#each list}} ... {{/each}}  repeats the block once per item; inside the
+#                              block, names resolve against the item first
+#                              and the enclosing scope second
+#
+# It exists so a page can be written without a build-time dependency, which
+# is the same constraint the rest of this repo runs under.
+# ---------------------------------------------------------------------------
+
+_VAR_RE = re.compile(r"\{\{\s*([A-Za-z_][\w.]*)\s*\}\}")
+_SECTION_RE = re.compile(
+    r"\{\{#(if|unless|each)\s+([A-Za-z_][\w.]*)\s*\}\}(.*?)\{\{/\1\}\}",
+    re.S,
+)
+
+
+def lookup(scope: list[dict], path: str):
+    """Resolve a dotted path against a scope stack (innermost scope first)."""
+    for frame in scope:
+        if path in frame:
+            return frame[path]
+    if "." in path:
+        head, rest = path.split(".", 1)
+        for frame in scope:
+            if head in frame and isinstance(frame[head], dict):
+                value = lookup([frame[head]], rest)
+                if value is not None:
+                    return value
+    return None
+
+
+def render(template: str, scope: dict) -> str:
+    """Render a template string against a scope mapping."""
+    stack: list[dict] = [scope]
+
+    def expand(text: str, current: list[dict]) -> str:
+        def replace_section(match: re.Match) -> str:
+            kind, name, body = match.group(1), match.group(2), match.group(3)
+            value = lookup(current, name)
+            if kind == "each":
+                if not isinstance(value, (list, tuple)):
+                    return ""
+                return "".join(expand(body, [dict(item), *current])
+                               for item in value)
+            truthy = bool(value)
+            if kind == "unless":
+                truthy = not truthy
+            return expand(body, current) if truthy else ""
+
+        def replace_var(match: re.Match) -> str:
+            value = lookup(current, match.group(1))
+            if value is None:
+                return ""
+            return html.escape(str(value), quote=True)
+
+        # Sections first, then variables -- but both at THIS scope. Expanding a
+        # section body with a different scope and substituting variables
+        # afterwards would resolve every {{ name }} against the outermost
+        # scope, which silently empties every row of an {{#each}} block.
+        text = _SECTION_RE.sub(replace_section, text)
+        return _VAR_RE.sub(replace_var, text)
+
+    return expand(template, stack)
+
+
+# ---------------------------------------------------------------------------
+# Data-file -> page scope
+# ---------------------------------------------------------------------------
+
+RARITY_ORDER = [
+    "Common",
+    "Uncommon",
+    "Rare",
+    "Double Rare",
+    "Ultra Rare",
+    "Illustration Rare",
+    "Special Illustration Rare",
+    "Mega Hyper Rare",
+]
+
+
+def cents_to_display(cents) -> str:
+    if cents is None:
+        return "—"
+    return f"${int(cents) / 100:,.2f}"
+
+
+def rarity_breakdown(cards: list[dict]) -> str:
+    counts: dict[str, int] = {}
+    for card in cards:
+        counts[card.get("rarity") or "Unspecified"] = (
+            counts.get(card.get("rarity") or "Unspecified", 0) + 1
+        )
+    ordered = [r for r in RARITY_ORDER if r in counts]
+    ordered += sorted(r for r in counts if r not in RARITY_ORDER)
+    if not ordered:
+        return ""
+    return " · ".join(f"{r} {counts[r]}" for r in ordered)
+
+
+def price_state(data: dict, cards: list[dict], sealed: list[dict]) -> str:
+    """live | from-release-day
+
+    A price row exists for a card only once the market has one. Until then the
+    page shows the empty state rather than a zero, which would read as a
+    price and not as an absence.
+    """
+    priced = sum(1 for c in cards if c.get("market_cents") is not None)
+    if priced:
+        return "live"
+    if data.get("release_date") and data["release_date"] > datetime.now(timezone.utc).date().isoformat():
+        return "from-release-day"
+    return "live" if sealed and any(s.get("market_cents") is not None for s in sealed) else "from-release-day"
+
+
+def build_scope(data: dict) -> dict:
+    cards = list(data.get("cards") or [])
+    sealed = list(data.get("sealed") or [])
+    retrieved = data.get("retrieved_at_utc") or ""
+    set_meta = data.get("set") or {}
+    slug = data.get("slug") or ""
+
+    for card in cards:
+        card["market_display"] = cents_to_display(card.get("market_cents"))
+        card["low_display"] = cents_to_display(card.get("low_cents"))
+    for product in sealed:
+        product["market_display"] = cents_to_display(product.get("market_cents"))
+        product["low_display"] = cents_to_display(product.get("low_cents"))
+
+    state = price_state(data, cards, sealed)
+    prices_as_of = data.get("prices_as_of_utc") or retrieved
+
+    scope = {
+        "slug": slug,
+        "canonical_url": f"{SITE_URL}/sets/{slug}",
+        "set": set_meta,
+        "set_size": len(cards),
+        "set_size_label": data.get("set_size_label") or str(len(cards)),
+        "cards_listed": len(cards),
+        "cards": cards,
+        "sealed": sealed,
+        "rarity_breakdown": rarity_breakdown(cards),
+        "tcgcsv_group_id": data.get("tcgcsv_group_id"),
+        "price_source_label": data.get("price_source", {}).get("name")
+        or "TCGplayer market price via TCGCSV",
+        "prices_as_of_display": prices_as_of.replace("T", " ").replace("Z", " UTC")
+        if prices_as_of else "—",
+        "retrieved_at_utc": retrieved,
+        "prices_pending": state == "from-release-day",
+        "prices_pending_note": (
+            "Prices from release day. This expansion releases 2026-11-06; the "
+            "market has no price history for it yet, so the price columns stay "
+            "empty until the first close. The columns are wired to the same "
+            "TCGCSV feed the rest of this site reads and fill on the first run "
+            "after release."
+        ),
+    }
+    return scope
+
+
+# ---------------------------------------------------------------------------
+# Sitemap
+# ---------------------------------------------------------------------------
+
+# The trailing group deliberately does NOT swallow the newline and indent
+# that follow the block: a pattern ending in \s* eats the NEXT entry's
+# indentation, so removing and re-adding an entry silently changes the
+# indentation of the one that follows it.
+_URL_BLOCK_RE = re.compile(r"[ \t]*<url>.*?</url>[ \t]*(?:\r?\n)?", re.S)
+
+
+def _loc_of(block: str) -> str:
+    match = re.search(r"<loc>(.*?)</loc>", block, re.S)
+    return match.group(1).strip() if match else ""
+
+
+def write_text(path: pathlib.Path, text: str) -> None:
+    """Write UTF-8 with LF endings.
+
+    pathlib.Path.write_text uses the platform newline translation by default,
+    so on Windows a "\n" in the source becomes "\r\n" on disk. The files this
+    script rewrites are tracked with LF endings and have no .gitattributes
+    rule to normalise them, so a Windows build would rewrite every line of
+    site/sitemap.xml and show up as a whole-file diff.
+    """
+    with open(path, "w", encoding="utf-8", newline="\n") as handle:
+        handle.write(text)
+
+
+def update_sitemap(managed: dict[str, dict], today: str) -> str:
+    """Rewrite site/sitemap.xml.
+
+    `managed` maps slug -> {"url": ..., "lastmod": ..., "empty": bool}.
+    A set whose data file is empty is removed from the sitemap; a set with
+    rows is present exactly once. Every other entry is left byte-for-byte
+    alone, so a hand-edited entry survives a rebuild.
+    """
+    path = SITE / "sitemap.xml"
+    text = path.read_text(encoding="utf-8")
+    managed_urls = {info["url"]: slug for slug, info in managed.items()}
+    kept = []
+    for match in _URL_BLOCK_RE.finditer(text):
+        block = match.group(0)
+        if _loc_of(block) not in managed_urls:
+            kept.append(block)
+
+    for slug, info in sorted(managed.items()):
+        if info["empty"]:
+            continue
+        kept.append(
+            "  <url>\n"
+            f"    <loc>{info['url']}</loc>\n"
+            f"    <lastmod>{info['lastmod']}</lastmod>\n"
+            "    <changefreq>daily</changefreq>\n"
+            "    <priority>0.7</priority>\n"
+            "  </url>\n"
+        )
+
+    body = "".join(kept)
+    rebuilt = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        f"{body}"
+        "</urlset>\n"
+    )
+    write_text(path, rebuilt)
+    return rebuilt
+
+
+# ---------------------------------------------------------------------------
+# Redirects
+# ---------------------------------------------------------------------------
+
+_REDIRECT_RE = re.compile(r"^\s*/sets/(\S+)\s+\S+\s+\d{3}\s*$")
+
+_REDIRECT_BEGIN = "# >>> generated by scripts/build_sets.py >>>"
+_REDIRECT_END = "# <<< generated by scripts/build_sets.py <<<"
+
+
+def update_redirects(slugs: list[str]) -> str:
+    path = SITE / "_redirects"
+    text = path.read_text(encoding="utf-8") if path.exists() else ""
+
+    lines = text.splitlines()
+
+    # Drop a previously generated block, markers included, so a rebuild does
+    # not stack a second copy of it on the end of the file.
+    kept: list[str] = []
+    inside = False
+    for line in lines:
+        if line.strip() == _REDIRECT_BEGIN:
+            inside = True
+            continue
+        if line.strip() == _REDIRECT_END:
+            inside = False
+            continue
+        if inside:
+            continue
+        if _REDIRECT_RE.match(line):
+            continue
+        kept.append(line)
+
+    while kept and not kept[-1].strip():
+        kept.pop()
+
+    if slugs:
+        kept.append("")
+        kept.append(_REDIRECT_BEGIN)
+        kept.append("# Set pages — one clean URL per set. The rewrite serves the")
+        kept.append("# file behind it whether or not Pages' automatic HTML handling")
+        kept.append("# resolves the extensionless path.")
+        for slug in sorted(slugs):
+            kept.append(f"/sets/{slug}  /sets/{slug}.html  200")
+        kept.append(_REDIRECT_END)
+
+    rebuilt = "\n".join(kept) + "\n"
+    write_text(path, rebuilt)
+    return rebuilt
+
+
+# ---------------------------------------------------------------------------
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Render the set pages.")
+    parser.add_argument("--root", default=None,
+                        help="repository root to build (defaults to this repo)")
+    args = parser.parse_args(argv)
+    if args.root:
+        configure(pathlib.Path(args.root))
+
+    if not TEMPLATE.is_file():
+        print(f"FAIL  template not found: {TEMPLATE}")
+        return 1
+
+    template = TEMPLATE.read_text(encoding="utf-8")
+    SETS_OUT.mkdir(parents=True, exist_ok=True)
+
+    managed: dict[str, dict] = {}
+    rendered = 0
+
+    for path in sorted(DATA.glob("*.json")):
+        data = json.loads(path.read_text(encoding="utf-8"))
+        slug = data.get("slug") or path.stem
+        scope = build_scope(data)
+        out = SETS_OUT / f"{slug}.html"
+        write_text(out, render(template, scope))
+        rendered += 1
+
+        cards = data.get("cards") or []
+        lastmod = (data.get("retrieved_at_utc") or "")[:10] or \
+            datetime.now(timezone.utc).date().isoformat()
+        managed[slug] = {
+            "url": f"{SITE_URL}/sets/{slug}",
+            "lastmod": lastmod,
+            "empty": len(cards) == 0,
+        }
+        print(f"ok    {slug}: {len(cards)} card rows, "
+              f"{len(data.get('sealed') or [])} sealed rows -> {out.relative_to(ROOT)}")
+
+    update_sitemap(managed, datetime.now(timezone.utc).date().isoformat())
+    update_redirects(list(managed))
+    print(f"ok    sitemap: {len(managed)} set(s) managed")
+    print(f"ok    rendered {rendered} set page(s)")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
