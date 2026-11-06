@@ -5,19 +5,29 @@ on:
     branches: [main]
     paths:
       - 'site/**'
+      - 'data/**'
+      - 'templates/**'
       - 'scripts/validate_site.py'
+      - 'scripts/build_sets.py'
+      - 'scripts/fetch_tcgcsv.py'
       - 'tests/**'
       - 'models/**'
       - 'docs/**'
       - '.github/workflows/deploy.yml'
+      - '.github/workflows/sets-prices.yml'
   pull_request:
     paths:
       - 'site/**'
+      - 'data/**'
+      - 'templates/**'
       - 'scripts/validate_site.py'
+      - 'scripts/build_sets.py'
+      - 'scripts/fetch_tcgcsv.py'
       - 'tests/**'
       - 'models/**'
       - 'docs/**'
       - '.github/workflows/deploy.yml'
+      - '.github/workflows/sets-prices.yml'
   workflow_dispatch:
 
 concurrency:
@@ -30,6 +40,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      # The set pages are rendered from data/sets/*.json. Rendering before
+      # the gate means the gate checks the page that would actually ship,
+      # and a data file that was edited without rebuilding cannot reach
+      # production out of step with its own source.
+      - name: Render the set pages
+        run: python3 scripts/build_sets.py
 
       - name: Validate site
         run: python3 scripts/validate_site.py
@@ -60,6 +77,11 @@ jobs:
       deployments: write
     steps:
       - uses: actions/checkout@v4
+
+      # Same render the gate ran, so the published tree is the tree that
+      # passed the gate.
+      - name: Render the set pages
+        run: python3 scripts/build_sets.py
 
       # Cloudflare credentials are owner-supplied and may not exist yet. Absent
       # credentials mean "not configured", not "broken" — so detect and skip
