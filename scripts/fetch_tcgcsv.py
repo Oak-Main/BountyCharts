@@ -54,6 +54,7 @@ import time
 import urllib.error
 import urllib.request
 from datetime import datetime, timezone
+from http.client import HTTPException
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 DATA = ROOT / "data" / "sets"
@@ -320,7 +321,7 @@ def refresh_set(path: pathlib.Path, rebuild: bool) -> int:
             return 0
         print(f"FAIL  {path.name}: {exc.url} -> HTTP {exc.code}; snapshot preserved")
         return 1
-    except (OSError, ValueError, RuntimeError) as exc:
+    except (OSError, HTTPException, ValueError, RuntimeError) as exc:
         print(f"FAIL  {path.name}: {exc}; snapshot preserved")
         return 1
 
