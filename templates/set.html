@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{ set.name }} — card list and prices | BountyCharts</title>
-<meta name="description" content="[[COPY: delta-reign-description]]">
+<meta name="description" content="{{ seo_description }}">
 <meta name="robots" content="{{ robots_content }}">
 <link rel="canonical" href="{{ canonical_url }}">
 <meta property="og:type" content="website">
 <meta property="og:url" content="{{ canonical_url }}">
 <meta property="og:title" content="{{ set.name }} — card list and prices">
-<meta property="og:description" content="[[COPY: delta-reign-description]]">
+<meta property="og:description" content="{{ seo_description }}">
 <meta property="og:site_name" content="BountyCharts">
 <meta name="twitter:card" content="summary">
 <meta name="theme-color" content="#0E1116" media="(prefers-color-scheme: dark)">
@@ -24,7 +24,7 @@
   "@type": "CollectionPage",
   "name": "{{ set.name }} — card list and prices",
   "url": "{{ canonical_url }}",
-  "description": "[[COPY: delta-reign-description]]",
+  "description": "{{ seo_description }}",
   "inLanguage": "en",
   "isPartOf": {
     "@type": "WebSite",
@@ -116,6 +116,12 @@
     font-size: clamp(1.02rem, 2.2vw, 1.15rem);
     color: var(--ink-soft);
     max-width: 58ch;
+  }
+  .verdict {
+    margin: 0;
+    color: var(--ink);
+    max-width: 62ch;
+    line-height: 1.6;
   }
   .placeholder {
     margin: 0;
@@ -266,7 +272,7 @@
 
   <div class="hero">
     <h1>{{ set.name }}</h1>
-    <p class="lede">[[COPY: delta-reign-description]]</p>
+    <p class="lede">{{ seo_description }}</p>
   </div>
 
   <section>
@@ -375,7 +381,13 @@
 
   <section>
     <h2>Price verdict</h2>
-    <p class="placeholder">[[COPY: delta-reign-verdict]]</p>
+    {{#if verdict_ready}}
+    <p class="verdict">{{ verdict_lead }} The ten most expensive singles account for {{ verdict_top10_share }}% of the combined market value of all {{ verdict_priced_count }} singles that have a market price, led by {{ verdict_top_name }} ({{ verdict_top_rarity }}) at {{ verdict_top_price }}; {{ verdict_under_dollar_phrase }}.{{ verdict_listing_only }}</p>
+    <p class="verdict">If you want one specific card, buying the single is the reliable route; opening sealed product is a bet on pulling one of the few cards that carry the value. Prices in a set’s first weeks move quickly as supply arrives, so check the as-of date above before you buy.</p>
+    {{/if}}
+    {{#unless verdict_ready}}
+    <p class="verdict">The verdict needs market prices, and too few cards in this set have one yet. It fills in with the first price refresh that has them.</p>
+    {{/unless}}
   </section>
 
   <section>

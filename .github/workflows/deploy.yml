@@ -41,6 +41,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Drift check on the COMMITTED tree, before anything re-renders it. The
+      # render step below overwrites site/, so a drift test run after it would
+      # compare the builder's output with itself and could never fail.
+      - name: Committed pages match their data
+        run: python3 -m unittest tests.test_build_sets.TheCommittedPageMatchesTheDataFile -v
+
       # The set pages are rendered from data/sets/*.json. Rendering before
       # the gate means the gate checks the page that would actually ship,
       # and a data file that was edited without rebuilding cannot reach
