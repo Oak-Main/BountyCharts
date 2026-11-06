@@ -73,23 +73,18 @@ def copy_repo(tmp: pathlib.Path) -> pathlib.Path:
     return root
 
 
-COPY_MARKERS = {
-    "[[COPY: delta-reign-description]]": "A written description for the test.",
-    "[[COPY: delta-reign-verdict]]": "A written verdict for the test.",
-}
+TEST_MARKER = "[[COPY: test-unwritten]]"
 
 
-def fill_copy(root: pathlib.Path, only: tuple[str, ...] | None = None) -> None:
-    """Replace the author's [[COPY: ...]] markers in a temp copy of the template.
+def unwrite_copy(root: pathlib.Path) -> None:
+    """Put an unfilled [[COPY: ...]] marker back into a temp copy of the template.
 
-    Stands in for the author having written the copy, so a test can prove what
-    a finished page does. `only` fills just the markers it names.
+    Stands in for a future set whose copy has not been written yet, so a test
+    can prove the search hold still works now that Delta Reign's copy is in.
     """
     path = root / "templates" / "set.html"
     text = read(path)
-    for marker, words in COPY_MARKERS.items():
-        if only is None or marker in only:
-            text = text.replace(marker, words)
+    text = text.replace('<p class="lede">', f'<p class="lede">{TEST_MARKER} ', 1)
     with open(path, "w", encoding="utf-8", newline="\n") as handle:
         handle.write(text)
 
@@ -106,9 +101,8 @@ class SitemapIsGatedOnTheDataFile(unittest.TestCase):
         return root
 
     def test_a_set_with_rows_is_in_the_sitemap(self):
-        """With its copy written, a set that has rows is listed."""
         with tempfile.TemporaryDirectory() as tmp:
-            root = self._rebuild(pathlib.Path(tmp), fill_copy)
+            root = self._rebuild(pathlib.Path(tmp))
             sitemap = read(root / "site" / "sitemap.xml")
             self.assertIn("<loc>https://bountycharts.com/sets/delta-reign</loc>", sitemap)
 
@@ -146,7 +140,7 @@ class SitemapIsGatedOnTheDataFile(unittest.TestCase):
 
     def test_building_twice_does_not_duplicate_the_entry(self):
         with tempfile.TemporaryDirectory() as tmp:
-            root = self._rebuild(pathlib.Path(tmp), fill_copy)
+            root = self._rebuild(pathlib.Path(tmp))
             build_in(root)
             sitemap = read(root / "site" / "sitemap.xml")
             self.assertEqual(
@@ -167,7 +161,7 @@ class SitemapIsGatedOnTheDataFile(unittest.TestCase):
         """The gate checks this too, but the gate only looks at the shipped
         file -- this checks the builder produces it."""
         with tempfile.TemporaryDirectory() as tmp:
-            root = self._rebuild(pathlib.Path(tmp), fill_copy)
+            root = self._rebuild(pathlib.Path(tmp))
             sitemap = read(root / "site" / "sitemap.xml")
             self.assertIn("/sets/delta-reign", sitemap,
                           "the set's own entry must be among those checked")
@@ -209,25 +203,82 @@ class PriceColumnsAreWired(unittest.TestCase):
         self.assertIn(data["retrieved_at_utc"][:10], self.page)
 
 
-class CopyIsLeftForTheAuthor(unittest.TestCase):
-    """Set description and verdict text are markers, not invented copy."""
+class TheCopyIsWritten(unittest.TestCase):
+    """Delta Reign's description and verdict are written, so nothing is held."""
 
-    def test_the_page_carries_the_markers(self):
+    def test_no_copy_marker_is_left_on_the_page(self):
+        self.assertNotIn("[[COPY:", read(PAGE))
+
+    def test_no_copy_marker_is_left_in_the_template(self):
+        self.assertNotIn("[[COPY:", read(TEMPLATE))
+
+    def test_the_description_is_the_same_everywhere_it_appears(self):
         page = read(PAGE)
-        self.assertIn("[[COPY: delta-reign-description]]", page)
-        self.assertIn("[[COPY: delta-reign-verdict]]", page)
+        meta = re.search(r'<meta name="description" content="([^"]+)">', page).group(1)
+        self.assertIn(f'<meta property="og:description" content="{meta}">', page)
+        self.assertIn(f'<p class="lede">{meta}</p>', page)
+        self.assertIn(f'"description": "{meta}"', page)
+        self.assertLessEqual(len(meta), 160, "meta description fits a result snippet")
 
-    def test_the_template_carries_the_markers(self):
-        template = read(TEMPLATE)
-        self.assertIn("[[COPY: delta-reign-description]]", template)
-        self.assertIn("[[COPY: delta-reign-verdict]]", template)
+    def test_the_description_names_the_set(self):
+        data = json.loads(read(DATA))
+        meta = re.search(r'<meta name="description" content="([^"]+)">', read(PAGE)).group(1)
+        self.assertIn(data["set"]["short_name"], meta)
+        self.assertIn(data["set"]["set_code"], meta)
 
-    def test_there_is_no_other_copy_marker(self):
-        found = set(re.findall(r"\[\[COPY:[^\]]+\]\]", read(PAGE)))
-        self.assertEqual(
-            found,
-            {"[[COPY: delta-reign-description]]", "[[COPY: delta-reign-verdict]]"},
-            "only the set description and the verdict are markers")
+
+class TheVerdictComesFromThePrices(unittest.TestCase):
+    """The verdict is computed from the price rows, so it cannot go stale."""
+
+    def setUp(self):
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import build_sets  # noqa: E402
+        self.bs = build_sets
+        self.data = json.loads(read(DATA))
+
+    def test_the_committed_verdict_names_the_most_valuable_priced_card(self):
+        priced = [c for c in self.data["cards"] if c.get("market_cents") is not None]
+        top = max(priced, key=lambda c: c["market_cents"])
+        verdict = self.bs.price_verdict(self.data["cards"])
+        self.assertTrue(verdict["verdict_ready"])
+        self.assertEqual(verdict["verdict_top_name"], top["name"])
+        self.assertEqual(verdict["verdict_priced_count"], len(priced))
+        page = read(PAGE)
+        self.assertIn('<p class="verdict">', page)
+        self.assertIn(self.bs.cents_to_display(top["market_cents"]), page)
+
+    def test_a_listing_dearer_than_every_sale_is_mentioned(self):
+        cards = [{"name": f"C{i}", "rarity": "Common", "number": i,
+                  "market_cents": 100 + i, "low_cents": 90} for i in range(12)]
+        cards.append({"name": "Chase", "rarity": "Mega Hyper Rare", "number": 99,
+                      "market_cents": None, "low_cents": 50000})
+        verdict = self.bs.price_verdict(cards)
+        self.assertIn("Chase (Mega Hyper Rare) has no market price yet", verdict["verdict_listing_only"])
+        self.assertIn("$500.00", verdict["verdict_listing_only"])
+
+    def test_too_few_prices_gives_no_verdict(self):
+        cards = [{"name": "A", "rarity": "Common", "market_cents": 50}]
+        self.assertEqual(self.bs.price_verdict(cards), {"verdict_ready": False})
+
+    def test_a_pre_release_set_reads_its_release_date_from_the_set_block(self):
+        data = {"set": {"release_date": "2999-01-01"}}
+        cards = [{"name": "A", "market_cents": None}]
+        sealed = [{"name": "Box", "market_cents": 10000}]
+        self.assertEqual(self.bs.price_state(data, cards, sealed), "from-release-day")
+
+    def test_a_released_set_with_only_sealed_prices_is_live(self):
+        data = {"set": {"release_date": "2000-01-01"}}
+        cards = [{"name": "A", "market_cents": None}]
+        sealed = [{"name": "Box", "market_cents": 10000}]
+        self.assertEqual(self.bs.price_state(data, cards, sealed), "live")
+
+    def test_the_pending_note_uses_the_data_files_release_date(self):
+        data = json.loads(read(DATA))
+        data["set"]["release_date"] = "2999-12-31"
+        for c in data["cards"]:
+            c["market_cents"] = None
+        scope = self.bs.build_scope(data)
+        self.assertIn("2999-12-31", scope["prices_pending_note"])
 
 
 ROBOTS_RE = re.compile(r'<meta name="robots" content="([^"]*)">')
@@ -251,47 +302,44 @@ class UnfinishedCopyIsKeptOutOfSearch(unittest.TestCase):
         self.assertEqual(len(found), 1, "exactly one robots meta on the page")
         return found[0]
 
-    def test_the_committed_page_is_noindex_while_markers_remain(self):
-        self.assertEqual(ROBOTS_RE.findall(read(PAGE)), ["noindex,follow"])
+    def test_the_committed_page_is_indexable_now_its_copy_is_written(self):
+        self.assertEqual(ROBOTS_RE.findall(read(PAGE)),
+                         ["index,follow,max-image-preview:large"])
+        self.assertIn("<loc>https://bountycharts.com/sets/delta-reign</loc>",
+                      read(ROOT / "site" / "sitemap.xml"))
 
-    def test_the_page_is_not_in_the_sitemap_while_markers_remain(self):
+    def test_an_unwritten_marker_makes_the_page_noindex(self):
         with tempfile.TemporaryDirectory() as tmp:
-            root = self._build(tmp)
+            root = self._build(tmp, unwrite_copy)
+            self.assertEqual(self._robots(root), "noindex,follow")
+
+    def test_an_unwritten_marker_keeps_the_page_out_of_the_sitemap(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self._build(tmp, unwrite_copy)
             self.assertNotIn("/sets/delta-reign", read(root / "site" / "sitemap.xml"))
 
-    def test_the_page_is_still_rendered_while_markers_remain(self):
+    def test_the_page_is_still_rendered_while_a_marker_remains(self):
         with tempfile.TemporaryDirectory() as tmp:
-            root = self._build(tmp)
+            root = self._build(tmp, unwrite_copy)
             self.assertTrue((root / "site" / "sets" / "delta-reign.html").is_file())
 
     def test_a_marker_that_comes_back_takes_a_listed_set_off_the_sitemap(self):
         """The hold must remove an entry that is already listed, not only
-        decline to add one: the tests above start from a sitemap that never
-        had the set in it."""
+        decline to add one."""
         with tempfile.TemporaryDirectory() as tmp:
-            root = self._build(tmp, fill_copy)
+            root = self._build(tmp)
             sitemap = root / "site" / "sitemap.xml"
             self.assertIn("<loc>https://bountycharts.com/sets/delta-reign</loc>",
                           read(sitemap), "precondition: the finished page is listed")
-            # Put the author's markers back, as if the copy were reverted.
-            shutil.copyfile(TEMPLATE, root / "templates" / "set.html")
+            unwrite_copy(root)
             result = build_in(root)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             self.assertNotIn("/sets/delta-reign", read(sitemap))
             self.assertEqual(self._robots(root), "noindex,follow")
 
-    def test_one_remaining_marker_keeps_the_page_held(self):
-        def fill_only_the_description(root: pathlib.Path):
-            fill_copy(root, ("[[COPY: delta-reign-description]]",))
-
-        with tempfile.TemporaryDirectory() as tmp:
-            root = self._build(tmp, fill_only_the_description)
-            self.assertEqual(self._robots(root), "noindex,follow")
-            self.assertNotIn("/sets/delta-reign", read(root / "site" / "sitemap.xml"))
-
     def test_a_finished_page_is_indexable_and_listed(self):
         with tempfile.TemporaryDirectory() as tmp:
-            root = self._build(tmp, fill_copy)
+            root = self._build(tmp)
             self.assertEqual(self._robots(root), "index,follow,max-image-preview:large")
             self.assertIn("<loc>https://bountycharts.com/sets/delta-reign</loc>",
                           read(root / "site" / "sitemap.xml"))

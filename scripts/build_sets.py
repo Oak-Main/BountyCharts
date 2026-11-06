@@ -188,9 +188,56 @@ def price_state(data: dict, cards: list[dict], sealed: list[dict]) -> str:
     priced = sum(1 for c in cards if c.get("market_cents") is not None)
     if priced:
         return "live"
-    if data.get("release_date") and data["release_date"] > datetime.now(timezone.utc).date().isoformat():
+    # The release date lives under "set" in the data file. Reading a
+    # top-level key that no data file has meant a pre-release set with no
+    # card prices was never recognised as pre-release.
+    release = (data.get("set") or {}).get("release_date") or data.get("release_date")
+    if release and release > datetime.now(timezone.utc).date().isoformat():
         return "from-release-day"
     return "live" if sealed and any(s.get("market_cents") is not None for s in sealed) else "from-release-day"
+
+
+# The verdict is computed from the same rows the tables show, so it moves
+# with every price refresh instead of going stale the day after it is written.
+VERDICT_MIN_PRICED = 10
+
+
+def price_verdict(cards: list[dict]) -> dict:
+    """Facts for the "Price verdict" section, or verdict_ready=False when too
+    few singles have a market price to say anything honest."""
+    priced = sorted(
+        (c for c in cards if c.get("market_cents") is not None),
+        key=lambda c: (-int(c["market_cents"]), c.get("number") or 0),
+    )
+    if len(priced) < VERDICT_MIN_PRICED:
+        return {"verdict_ready": False}
+    total = sum(int(c["market_cents"]) for c in priced)
+    top = priced[0]
+    top10 = sum(int(c["market_cents"]) for c in priced[:10])
+    verdict = {
+        "verdict_ready": True,
+        "verdict_priced_count": len(priced),
+        "verdict_top10_share": round(top10 * 100 / total) if total else 0,
+        "verdict_top_name": top.get("name") or "",
+        "verdict_top_rarity": top.get("rarity") or "Unspecified",
+        "verdict_top_price": cents_to_display(top["market_cents"]),
+        "verdict_under_dollar": sum(1 for c in priced if int(c["market_cents"]) < 100),
+        "verdict_listing_only": "",
+    }
+    # A card can have live listings and no market price yet (no sales). When
+    # its cheapest listing is above the top market price, leaving it out would
+    # misstate where the value is.
+    listed = [c for c in cards
+              if c.get("market_cents") is None and c.get("low_cents") is not None]
+    if listed:
+        dearest = max(listed, key=lambda c: int(c["low_cents"]))
+        if int(dearest["low_cents"]) > int(top["market_cents"]):
+            verdict["verdict_listing_only"] = (
+                f" {dearest.get('name')} ({dearest.get('rarity') or 'Unspecified'}) "
+                "has no market price yet; its lowest listing is "
+                f"{cents_to_display(dearest['low_cents'])}."
+            )
+    return verdict
 
 
 def build_scope(data: dict) -> dict:
@@ -229,13 +276,15 @@ def build_scope(data: dict) -> dict:
         "robots_content": ROBOTS_INDEXABLE,
         "prices_pending": state == "from-release-day",
         "prices_pending_note": (
-            "Prices from release day. This expansion releases 2026-11-06; the "
+            "Prices from release day. This expansion releases "
+            f"{set_meta.get('release_date') or 'soon'}; the "
             "market has no price history for it yet, so the price columns stay "
             "empty until the first close. The columns are wired to the same "
             "TCGCSV feed the rest of this site reads and fill on the first run "
             "after release."
         ),
     }
+    scope.update(price_verdict(cards))
     return scope
 
 
