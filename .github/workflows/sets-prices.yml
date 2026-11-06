@@ -177,6 +177,7 @@ jobs:
       # push a review branch. Hand off only the exact validated candidate.
       - name: Verify the review branch and record draft status
         if: steps.candidate.outputs.changed == 'true'
+        timeout-minutes: 2
         env:
           GH_TOKEN: ${{ github.token }}
           EXPECTED_TREE: ${{ steps.candidate.outputs.tree }}
@@ -213,5 +214,5 @@ jobs:
             echo "$status branch=$REVIEW_BRANCH base=$GITHUB_SHA head=$head tree=$EXPECTED_TREE" | tee -a "$GITHUB_STEP_SUMMARY"
             exit 0
           done
-          echo "::error::Could not verify the validated ref and draft state within 60 seconds."
+          echo "::error::Could not verify the validated ref and draft state after six read attempts."
           exit 1
