@@ -214,14 +214,28 @@ def price_verdict(cards: list[dict]) -> dict:
     total = sum(int(c["market_cents"]) for c in priced)
     top = priced[0]
     top10 = sum(int(c["market_cents"]) for c in priced[:10])
+    share = round(top10 * 100 / total) if total else 0
+    under = sum(1 for c in priced if int(c["market_cents"]) < 100)
     verdict = {
         "verdict_ready": True,
+        # The opening claim follows the numbers rather than asserting a shape
+        # every set is assumed to have.
+        "verdict_lead": (
+            "Most of this set\u2019s value sits in a few cards."
+            if share >= 50 else
+            "Value in this set is spread across many cards, not a handful."
+        ),
+        "verdict_under_dollar_phrase": (
+            "none trades under $1" if under == 0 else
+            "1 trades under $1" if under == 1 else
+            f"{under} trade under $1"
+        ),
         "verdict_priced_count": len(priced),
-        "verdict_top10_share": round(top10 * 100 / total) if total else 0,
+        "verdict_top10_share": share,
         "verdict_top_name": top.get("name") or "",
         "verdict_top_rarity": top.get("rarity") or "Unspecified",
         "verdict_top_price": cents_to_display(top["market_cents"]),
-        "verdict_under_dollar": sum(1 for c in priced if int(c["market_cents"]) < 100),
+        "verdict_under_dollar": under,
         "verdict_listing_only": "",
     }
     # A card can have live listings and no market price yet (no sales). When
@@ -238,6 +252,35 @@ def price_verdict(cards: list[dict]) -> dict:
                 f"{cents_to_display(dearest['low_cents'])}."
             )
     return verdict
+
+
+MONTHS = ["January", "February", "March", "April", "May", "June", "July",
+          "August", "September", "October", "November", "December"]
+
+
+def long_date(iso: str) -> str:
+    """2026-11-06 -> November 6, 2026; anything unparseable is returned as is."""
+    try:
+        year, month, day = (int(x) for x in iso.split("-"))
+        return f"{MONTHS[month - 1]} {day}, {year}"
+    except (ValueError, IndexError, AttributeError):
+        return iso or ""
+
+
+def seo_description(set_meta: dict, n_cards: int, n_sealed: int) -> str:
+    """One sourced line for the meta, OG, JSON-LD and lede, built from the data
+    file so it is specific to the set and true for whatever the file holds."""
+    name = set_meta.get("short_name") or set_meta.get("name") or "This set"
+    code = set_meta.get("set_code")
+    head = f"{name} ({code})" if code else name
+    parts = [f"{head} prices: TCGplayer market and low prices for all {n_cards} listed cards"]
+    if n_sealed:
+        parts.append(f" and {n_sealed} sealed products")
+    release = set_meta.get("release_date")
+    if release:
+        parts.append(f" from the {long_date(release)} release")
+    parts.append(", with sources.")
+    return "".join(parts)
 
 
 def build_scope(data: dict) -> dict:
@@ -285,6 +328,7 @@ def build_scope(data: dict) -> dict:
         ),
     }
     scope.update(price_verdict(cards))
+    scope["seo_description"] = seo_description(set_meta, len(cards), len(sealed))
     return scope
 
 

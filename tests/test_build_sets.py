@@ -220,11 +220,14 @@ class TheCopyIsWritten(unittest.TestCase):
         self.assertIn(f'"description": "{meta}"', page)
         self.assertLessEqual(len(meta), 160, "meta description fits a result snippet")
 
-    def test_the_description_names_the_set(self):
+    def test_the_description_is_specific_to_the_set(self):
         data = json.loads(read(DATA))
         meta = re.search(r'<meta name="description" content="([^"]+)">', read(PAGE)).group(1)
         self.assertIn(data["set"]["short_name"], meta)
         self.assertIn(data["set"]["set_code"], meta)
+        self.assertIn(f'all {len(data["cards"])} listed cards', meta)
+        self.assertIn(f'{len(data["sealed"])} sealed products', meta)
+        self.assertIn("November 6, 2026", meta)
 
 
 class TheVerdictComesFromThePrices(unittest.TestCase):
@@ -246,6 +249,41 @@ class TheVerdictComesFromThePrices(unittest.TestCase):
         page = read(PAGE)
         self.assertIn('<p class="verdict">', page)
         self.assertIn(self.bs.cents_to_display(top["market_cents"]), page)
+
+    def test_the_rendered_verdict_follows_a_price_refresh(self):
+        """Change the prices, rebuild, and the verdict paragraph itself must
+        name the new top card: a hard-coded verdict would fail this."""
+        def make_a_new_leader(root: pathlib.Path):
+            path = root / "data" / "sets" / "delta-reign.json"
+            data = json.loads(path.read_text(encoding="utf-8"))
+            data["cards"][0]["market_cents"] = 123456
+            path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = copy_repo(pathlib.Path(tmp))
+            make_a_new_leader(root)
+            result = build_in(root)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            page = read(root / "site" / "sets" / "delta-reign.html")
+        verdict = " ".join(re.findall(r'<p class="verdict">(.*?)</p>', page, re.S))
+        leader = json.loads(read(DATA))["cards"][0]["name"]
+        self.assertIn(f"led by {leader}", verdict)
+        self.assertIn("$1,234.56", verdict)
+
+    def test_the_opening_claim_follows_the_share(self):
+        flat = [{"name": f"C{i}", "rarity": "Common", "number": i,
+                 "market_cents": 100, "low_cents": 90} for i in range(40)]
+        self.assertIn("spread across many cards", self.bs.price_verdict(flat)["verdict_lead"])
+        steep = flat[:12] + [{"name": "Chase", "rarity": "Ultra Rare", "number": 99,
+                              "market_cents": 100000, "low_cents": 90000}]
+        self.assertIn("sits in a few cards", self.bs.price_verdict(steep)["verdict_lead"])
+
+    def test_the_under_a_dollar_phrase_is_grammatical(self):
+        cards = [{"name": f"C{i}", "rarity": "Common", "number": i,
+                  "market_cents": 500, "low_cents": 400} for i in range(11)]
+        self.assertEqual(self.bs.price_verdict(cards)["verdict_under_dollar_phrase"], "none trades under $1")
+        cards[0]["market_cents"] = 50
+        self.assertEqual(self.bs.price_verdict(cards)["verdict_under_dollar_phrase"], "1 trades under $1")
 
     def test_a_listing_dearer_than_every_sale_is_mentioned(self):
         cards = [{"name": f"C{i}", "rarity": "Common", "number": i,
