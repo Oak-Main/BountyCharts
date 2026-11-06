@@ -18,19 +18,19 @@
     "prices_url": "https://tcgcsv.com/tcgplayer/3/24831/prices",
     "catalogue_url": "https://tcgcsv.com/tcgplayer/3/24831/products",
     "group_id": 24831,
-    "retrieved_at_utc": "2026-11-06T06:50:10Z",
-    "rows_sha256": "964376936cf74505aef85bdf77be1e64e5ec7544aee5caff7faa7582db4f6c01"
+    "retrieved_at_utc": "2026-11-06T20:11:22Z",
+    "rows_sha256": "e7c65968f7528ad9f368257018988bf88bf115076e1c2e12139501c51ab4ca6b"
   },
   "sources": [
     {
       "name": "Card list, numbering and rarity — TCGplayer catalogue via TCGCSV, set group 24831",
       "url": "https://tcgcsv.com/tcgplayer/3/24831/products",
-      "retrieved_at_utc": "2026-11-06T06:50:10Z"
+      "retrieved_at_utc": "2026-11-06T20:11:22Z"
     },
     {
       "name": "Prices — TCGplayer market and low prices via TCGCSV, set group 24831",
       "url": "https://tcgcsv.com/tcgplayer/3/24831/prices",
-      "retrieved_at_utc": "2026-11-06T06:50:10Z"
+      "retrieved_at_utc": "2026-11-06T20:11:22Z"
     },
     {
       "name": "Release date and official card count — The Pokémon Company International, Pokémon TCG: Mega Evolution—Delta Reign product showcase",
@@ -75,8 +75,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 727563,
       "tcgplayer_url": "https://www.tcgplayer.com/product/727563/pokemon-me06-delta-reign-heracross",
-      "market_cents": 25,
-      "low_cents": 25,
+      "market_cents": 13,
+      "low_cents": 4,
       "price_subtype": "Normal"
     },
     {
@@ -90,8 +90,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 727564,
       "tcgplayer_url": "https://www.tcgplayer.com/product/727564/pokemon-me06-delta-reign-surskit",
-      "market_cents": 45,
-      "low_cents": 25,
+      "market_cents": 13,
+      "low_cents": 1,
       "price_subtype": "Normal"
     },
     {
@@ -105,8 +105,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726510,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726510/pokemon-me06-delta-reign-masquerain-003-103",
-      "market_cents": 37,
-      "low_cents": 28,
+      "market_cents": 14,
+      "low_cents": 1,
       "price_subtype": "Normal"
     },
     {
@@ -120,8 +120,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 727565,
       "tcgplayer_url": "https://www.tcgplayer.com/product/727565/pokemon-me06-delta-reign-cacnea",
-      "market_cents": 25,
-      "low_cents": 24,
+      "market_cents": 17,
+      "low_cents": 9,
       "price_subtype": "Normal"
     },
     {
@@ -135,8 +135,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 727566,
       "tcgplayer_url": "https://www.tcgplayer.com/product/727566/pokemon-me06-delta-reign-cacturne",
-      "market_cents": 40,
-      "low_cents": 35,
+      "market_cents": 31,
+      "low_cents": 19,
       "price_subtype": "Reverse Holofoil"
     },
     {
@@ -150,8 +150,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 727567,
       "tcgplayer_url": "https://www.tcgplayer.com/product/727567/pokemon-me06-delta-reign-combee",
-      "market_cents": 38,
-      "low_cents": 25,
+      "market_cents": 19,
+      "low_cents": 1,
       "price_subtype": "Normal"
     },
     {
@@ -165,8 +165,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 727568,
       "tcgplayer_url": "https://www.tcgplayer.com/product/727568/pokemon-me06-delta-reign-vespiquen",
-      "market_cents": 34,
-      "low_cents": 33,
+      "market_cents": 8,
+      "low_cents": 1,
       "price_subtype": "Normal"
     },
     {
@@ -180,8 +180,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 727569,
       "tcgplayer_url": "https://www.tcgplayer.com/product/727569/pokemon-me06-delta-reign-shaymin",
-      "market_cents": 25,
-      "low_cents": 25,
+      "market_cents": 11,
+      "low_cents": 1,
       "price_subtype": "Normal"
     },
     {
@@ -195,8 +195,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726511,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726511/pokemon-me06-delta-reign-virizion",
-      "market_cents": 25,
-      "low_cents": 25,
+      "market_cents": 11,
+      "low_cents": 6,
       "price_subtype": "Normal"
     },
     {
@@ -210,8 +210,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 727570,
       "tcgplayer_url": "https://www.tcgplayer.com/product/727570/pokemon-me06-delta-reign-wimpod",
-      "market_cents": 29,
-      "low_cents": 25,
+      "market_cents": 19,
+      "low_cents": 7,
       "price_subtype": "Normal"
     },
     {
@@ -225,8 +225,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726512,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726512/pokemon-me06-delta-reign-mega-golisopod-ex-011-103",
-      "market_cents": 363,
-      "low_cents": 220,
+      "market_cents": 99,
+      "low_cents": 48,
       "price_subtype": "Holofoil"
     },
     {
@@ -240,8 +240,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726513,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726513/pokemon-me06-delta-reign-sprigatito-012-103",
-      "market_cents": 25,
-      "low_cents": 25,
+      "market_cents": 15,
+      "low_cents": 10,
       "price_subtype": "Normal"
     },
     {
@@ -255,9 +255,9 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726514,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726514/pokemon-me06-delta-reign-floragato",
-      "market_cents": 28,
-      "low_cents": 23,
-      "price_subtype": "Reverse Holofoil"
+      "market_cents": 11,
+      "low_cents": 5,
+      "price_subtype": "Normal"
     },
     {
       "number": 14,
@@ -270,8 +270,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726515,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726515/pokemon-me06-delta-reign-meowscarada-ex",
-      "market_cents": 94,
-      "low_cents": 39,
+      "market_cents": 39,
+      "low_cents": 24,
       "price_subtype": "Holofoil"
     },
     {
@@ -285,8 +285,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 727571,
       "tcgplayer_url": "https://www.tcgplayer.com/product/727571/pokemon-me06-delta-reign-smoliv",
-      "market_cents": 22,
-      "low_cents": 19,
+      "market_cents": 16,
+      "low_cents": 10,
       "price_subtype": "Normal"
     },
     {
@@ -300,8 +300,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 727572,
       "tcgplayer_url": "https://www.tcgplayer.com/product/727572/pokemon-me06-delta-reign-dolliv",
-      "market_cents": 21,
-      "low_cents": 19,
+      "market_cents": 15,
+      "low_cents": 9,
       "price_subtype": "Normal"
     },
     {
@@ -315,8 +315,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 727573,
       "tcgplayer_url": "https://www.tcgplayer.com/product/727573/pokemon-me06-delta-reign-arboliva",
-      "market_cents": 25,
-      "low_cents": 25,
+      "market_cents": 13,
+      "low_cents": 1,
       "price_subtype": "Normal"
     },
     {
@@ -330,8 +330,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726516,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726516/pokemon-me06-delta-reign-growlithe-018-103",
-      "market_cents": 25,
-      "low_cents": 25,
+      "market_cents": 16,
+      "low_cents": 5,
       "price_subtype": "Normal"
     },
     {
@@ -345,8 +345,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726517,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726517/pokemon-me06-delta-reign-arcanine",
-      "market_cents": 40,
-      "low_cents": 38,
+      "market_cents": 28,
+      "low_cents": 19,
       "price_subtype": "Reverse Holofoil"
     },
     {
@@ -360,8 +360,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 727574,
       "tcgplayer_url": "https://www.tcgplayer.com/product/727574/pokemon-me06-delta-reign-magmar",
-      "market_cents": 25,
-      "low_cents": 25,
+      "market_cents": 12,
+      "low_cents": 1,
       "price_subtype": "Normal"
     },
     {
@@ -375,8 +375,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 727575,
       "tcgplayer_url": "https://www.tcgplayer.com/product/727575/pokemon-me06-delta-reign-magmortar",
-      "market_cents": 38,
-      "low_cents": 30,
+      "market_cents": 22,
+      "low_cents": 10,
       "price_subtype": "Holofoil"
     },
     {
@@ -390,8 +390,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 727576,
       "tcgplayer_url": "https://www.tcgplayer.com/product/727576/pokemon-me06-delta-reign-torkoal",
-      "market_cents": 25,
-      "low_cents": 25,
+      "market_cents": 11,
+      "low_cents": 4,
       "price_subtype": "Normal"
     },
     {
@@ -405,7 +405,7 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726518,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726518/pokemon-me06-delta-reign-heat-rotom-ex-023-103",
-      "market_cents": 83,
+      "market_cents": 47,
       "low_cents": 25,
       "price_subtype": "Holofoil"
     },
@@ -420,8 +420,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 727577,
       "tcgplayer_url": "https://www.tcgplayer.com/product/727577/pokemon-me06-delta-reign-heatmor",
-      "market_cents": 25,
-      "low_cents": 25,
+      "market_cents": 14,
+      "low_cents": 8,
       "price_subtype": "Normal"
     },
     {
@@ -435,8 +435,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 727578,
       "tcgplayer_url": "https://www.tcgplayer.com/product/727578/pokemon-me06-delta-reign-mantine",
-      "market_cents": 33,
-      "low_cents": 25,
+      "market_cents": 10,
+      "low_cents": 1,
       "price_subtype": "Normal"
     },
     {
@@ -450,8 +450,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726519,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726519/pokemon-me06-delta-reign-kyogre",
-      "market_cents": 49,
-      "low_cents": 40,
+      "market_cents": 25,
+      "low_cents": 8,
       "price_subtype": "Holofoil"
     },
     {
@@ -465,8 +465,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 727579,
       "tcgplayer_url": "https://www.tcgplayer.com/product/727579/pokemon-me06-delta-reign-frillish",
-      "market_cents": 33,
-      "low_cents": 30,
+      "market_cents": 19,
+      "low_cents": 3,
       "price_subtype": "Normal"
     },
     {
@@ -480,8 +480,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 727580,
       "tcgplayer_url": "https://www.tcgplayer.com/product/727580/pokemon-me06-delta-reign-jellicent",
-      "market_cents": 40,
-      "low_cents": 33,
+      "market_cents": 18,
+      "low_cents": 4,
       "price_subtype": "Normal"
     },
     {
@@ -495,8 +495,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726520,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726520/pokemon-me06-delta-reign-wishiwashi-ex-029-103",
-      "market_cents": 290,
-      "low_cents": 199,
+      "market_cents": 60,
+      "low_cents": 38,
       "price_subtype": "Holofoil"
     },
     {
@@ -510,8 +510,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 727581,
       "tcgplayer_url": "https://www.tcgplayer.com/product/727581/pokemon-me06-delta-reign-electabuzz",
-      "market_cents": 25,
-      "low_cents": 25,
+      "market_cents": 13,
+      "low_cents": 1,
       "price_subtype": "Normal"
     },
     {
@@ -525,8 +525,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726521,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726521/pokemon-me06-delta-reign-electivire-031-103",
-      "market_cents": 27,
-      "low_cents": 25,
+      "market_cents": 14,
+      "low_cents": 4,
       "price_subtype": "Normal"
     },
     {
@@ -540,8 +540,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726522,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726522/pokemon-me06-delta-reign-jolteon",
-      "market_cents": 30,
-      "low_cents": 25,
+      "market_cents": 19,
+      "low_cents": 10,
       "price_subtype": "Normal"
     },
     {
@@ -555,8 +555,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726523,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726523/pokemon-me06-delta-reign-raikou-ex-033-103",
-      "market_cents": 157,
-      "low_cents": 100,
+      "market_cents": 71,
+      "low_cents": 45,
       "price_subtype": "Holofoil"
     },
     {
@@ -570,8 +570,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 727582,
       "tcgplayer_url": "https://www.tcgplayer.com/product/727582/pokemon-me06-delta-reign-rotom",
-      "market_cents": 25,
-      "low_cents": 25,
+      "market_cents": 14,
+      "low_cents": 10,
       "price_subtype": "Normal"
     },
     {
@@ -585,8 +585,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726524,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726524/pokemon-me06-delta-reign-thundurus",
-      "market_cents": 25,
-      "low_cents": 25,
+      "market_cents": 12,
+      "low_cents": 4,
       "price_subtype": "Normal"
     },
     {
@@ -600,8 +600,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726525,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726525/pokemon-me06-delta-reign-pincurchin-036-103",
-      "market_cents": 29,
-      "low_cents": 25,
+      "market_cents": 16,
+      "low_cents": 1,
       "price_subtype": "Normal"
     },
     {
@@ -615,8 +615,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 727583,
       "tcgplayer_url": "https://www.tcgplayer.com/product/727583/pokemon-me06-delta-reign-pawmi",
-      "market_cents": 27,
-      "low_cents": 25,
+      "market_cents": 14,
+      "low_cents": 1,
       "price_subtype": "Normal"
     },
     {
@@ -630,8 +630,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 727584,
       "tcgplayer_url": "https://www.tcgplayer.com/product/727584/pokemon-me06-delta-reign-pawmo",
-      "market_cents": 30,
-      "low_cents": 25,
+      "market_cents": 15,
+      "low_cents": 1,
       "price_subtype": "Normal"
     },
     {
@@ -645,8 +645,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 727585,
       "tcgplayer_url": "https://www.tcgplayer.com/product/727585/pokemon-me06-delta-reign-pawmot",
-      "market_cents": 27,
-      "low_cents": 25,
+      "market_cents": 15,
+      "low_cents": 4,
       "price_subtype": "Normal"
     },
     {
@@ -660,14 +660,14 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 727586,
       "tcgplayer_url": "https://www.tcgplayer.com/product/727586/pokemon-me06-delta-reign-wattrel",
-      "market_cents": 28,
-      "low_cents": 25,
+      "market_cents": 14,
+      "low_cents": 4,
       "price_subtype": "Normal"
     },
     {
       "number": 41,
       "name": "Kilowattrel",
-      "rarity": "Common",
+      "rarity": "Uncommon",
       "card_type": "Lightning",
       "hp": "120",
       "stage": "Stage 1",
@@ -675,8 +675,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728021,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728021/pokemon-me06-delta-reign-kilowattrel",
-      "market_cents": 27,
-      "low_cents": 25,
+      "market_cents": 13,
+      "low_cents": 3,
       "price_subtype": "Normal"
     },
     {
@@ -690,8 +690,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728022,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728022/pokemon-me06-delta-reign-miraidon",
-      "market_cents": 25,
-      "low_cents": 25,
+      "market_cents": 10,
+      "low_cents": 4,
       "price_subtype": "Normal"
     },
     {
@@ -705,8 +705,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728023,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728023/pokemon-me06-delta-reign-drowzee",
-      "market_cents": 25,
-      "low_cents": 25,
+      "market_cents": 10,
+      "low_cents": 1,
       "price_subtype": "Normal"
     },
     {
@@ -720,8 +720,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726526,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726526/pokemon-me06-delta-reign-hypno",
-      "market_cents": 25,
-      "low_cents": 25,
+      "market_cents": 9,
+      "low_cents": 3,
       "price_subtype": "Normal"
     },
     {
@@ -735,8 +735,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726527,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726527/pokemon-me06-delta-reign-giratina",
-      "market_cents": 136,
-      "low_cents": 129,
+      "market_cents": 30,
+      "low_cents": 13,
       "price_subtype": "Holofoil"
     },
     {
@@ -750,8 +750,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728024,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728024/pokemon-me06-delta-reign-golett",
-      "market_cents": 37,
-      "low_cents": 30,
+      "market_cents": 17,
+      "low_cents": 3,
       "price_subtype": "Normal"
     },
     {
@@ -765,8 +765,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726528,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726528/pokemon-me06-delta-reign-mega-golurk-ex-047-103",
-      "market_cents": 223,
-      "low_cents": 90,
+      "market_cents": 82,
+      "low_cents": 67,
       "price_subtype": "Holofoil"
     },
     {
@@ -780,8 +780,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728025,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728025/pokemon-me06-delta-reign-enamorus",
-      "market_cents": 25,
-      "low_cents": 25,
+      "market_cents": 14,
+      "low_cents": 1,
       "price_subtype": "Normal"
     },
     {
@@ -795,8 +795,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728026,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728026/pokemon-me06-delta-reign-sandshrew",
-      "market_cents": 27,
-      "low_cents": 25,
+      "market_cents": 13,
+      "low_cents": 1,
       "price_subtype": "Normal"
     },
     {
@@ -810,8 +810,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728027,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728027/pokemon-me06-delta-reign-sandslash",
-      "market_cents": 27,
-      "low_cents": 25,
+      "market_cents": 13,
+      "low_cents": 1,
       "price_subtype": "Normal"
     },
     {
@@ -825,8 +825,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728028,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728028/pokemon-me06-delta-reign-onix",
-      "market_cents": 25,
-      "low_cents": 25,
+      "market_cents": 13,
+      "low_cents": 5,
       "price_subtype": "Normal"
     },
     {
@@ -840,8 +840,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728029,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728029/pokemon-me06-delta-reign-steelix",
-      "market_cents": 36,
-      "low_cents": 29,
+      "market_cents": 19,
+      "low_cents": 11,
       "price_subtype": "Holofoil"
     },
     {
@@ -855,8 +855,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726529,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726529/pokemon-me06-delta-reign-groudon",
-      "market_cents": 40,
-      "low_cents": 39,
+      "market_cents": 27,
+      "low_cents": 17,
       "price_subtype": "Reverse Holofoil"
     },
     {
@@ -870,8 +870,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726530,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726530/pokemon-me06-delta-reign-landorus",
-      "market_cents": 25,
-      "low_cents": 25,
+      "market_cents": 14,
+      "low_cents": 5,
       "price_subtype": "Normal"
     },
     {
@@ -885,8 +885,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726531,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726531/pokemon-me06-delta-reign-nidoran-f",
-      "market_cents": 34,
-      "low_cents": 30,
+      "market_cents": 15,
+      "low_cents": 5,
       "price_subtype": "Normal"
     },
     {
@@ -900,8 +900,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728031,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728031/pokemon-me06-delta-reign-nidorina",
-      "market_cents": 25,
-      "low_cents": 25,
+      "market_cents": 12,
+      "low_cents": 4,
       "price_subtype": "Normal"
     },
     {
@@ -915,8 +915,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728032,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728032/pokemon-me06-delta-reign-nidoqueen",
-      "market_cents": 199,
-      "low_cents": 189,
+      "market_cents": 87,
+      "low_cents": 10,
       "price_subtype": "Reverse Holofoil"
     },
     {
@@ -930,8 +930,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726532,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726532/pokemon-me06-delta-reign-spinarak",
-      "market_cents": 25,
-      "low_cents": 25,
+      "market_cents": 9,
+      "low_cents": 1,
       "price_subtype": "Normal"
     },
     {
@@ -945,8 +945,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728033,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728033/pokemon-me06-delta-reign-ariados",
-      "market_cents": 24,
-      "low_cents": 24,
+      "market_cents": 13,
+      "low_cents": 3,
       "price_subtype": "Normal"
     },
     {
@@ -960,8 +960,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726533,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726533/pokemon-me06-delta-reign-sableye",
-      "market_cents": 25,
-      "low_cents": 19,
+      "market_cents": 16,
+      "low_cents": 8,
       "price_subtype": "Normal"
     },
     {
@@ -975,8 +975,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728034,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728034/pokemon-me06-delta-reign-carvanha",
-      "market_cents": 29,
-      "low_cents": 25,
+      "market_cents": 16,
+      "low_cents": 1,
       "price_subtype": "Normal"
     },
     {
@@ -990,14 +990,14 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728035,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728035/pokemon-me06-delta-reign-sharpedo",
-      "market_cents": 28,
-      "low_cents": 25,
+      "market_cents": 18,
+      "low_cents": 8,
       "price_subtype": "Normal"
     },
     {
       "number": 63,
       "name": "Darkrai",
-      "rarity": "Common",
+      "rarity": "Uncommon",
       "card_type": "Darkness",
       "hp": "120",
       "stage": "Basic",
@@ -1005,8 +1005,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728036,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728036/pokemon-me06-delta-reign-darkrai",
-      "market_cents": 33,
-      "low_cents": 25,
+      "market_cents": 18,
+      "low_cents": 4,
       "price_subtype": "Normal"
     },
     {
@@ -1020,8 +1020,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728037,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728037/pokemon-me06-delta-reign-purrloin",
-      "market_cents": 25,
-      "low_cents": 25,
+      "market_cents": 15,
+      "low_cents": 9,
       "price_subtype": "Normal"
     },
     {
@@ -1035,8 +1035,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728038,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728038/pokemon-me06-delta-reign-liepard",
-      "market_cents": 25,
-      "low_cents": 25,
+      "market_cents": 11,
+      "low_cents": 3,
       "price_subtype": "Normal"
     },
     {
@@ -1050,8 +1050,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728039,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728039/pokemon-me06-delta-reign-zorua",
-      "market_cents": 32,
-      "low_cents": 25,
+      "market_cents": 14,
+      "low_cents": 1,
       "price_subtype": "Normal"
     },
     {
@@ -1065,8 +1065,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728040,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728040/pokemon-me06-delta-reign-zoroark-ex",
-      "market_cents": 72,
-      "low_cents": 55,
+      "market_cents": 53,
+      "low_cents": 34,
       "price_subtype": "Holofoil"
     },
     {
@@ -1080,8 +1080,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728041,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728041/pokemon-me06-delta-reign-inkay-068-103",
-      "market_cents": 36,
-      "low_cents": 30,
+      "market_cents": 21,
+      "low_cents": 4,
       "price_subtype": "Normal"
     },
     {
@@ -1095,8 +1095,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726534,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726534/pokemon-me06-delta-reign-mega-malamar-ex-069-103",
-      "market_cents": 356,
-      "low_cents": 197,
+      "market_cents": 104,
+      "low_cents": 50,
       "price_subtype": "Holofoil"
     },
     {
@@ -1110,8 +1110,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726535,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726535/pokemon-me06-delta-reign-morpeko",
-      "market_cents": 27,
-      "low_cents": 24,
+      "market_cents": 13,
+      "low_cents": 1,
       "price_subtype": "Normal"
     },
     {
@@ -1125,8 +1125,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726536,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726536/pokemon-me06-delta-reign-zarude",
-      "market_cents": 25,
-      "low_cents": 25,
+      "market_cents": 13,
+      "low_cents": 7,
       "price_subtype": "Normal"
     },
     {
@@ -1140,8 +1140,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726537,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726537/pokemon-me06-delta-reign-druddigon",
-      "market_cents": 25,
-      "low_cents": 25,
+      "market_cents": 9,
+      "low_cents": 3,
       "price_subtype": "Normal"
     },
     {
@@ -1155,8 +1155,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728042,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728042/pokemon-me06-delta-reign-jangmo-o",
-      "market_cents": 20,
-      "low_cents": 19,
+      "market_cents": 9,
+      "low_cents": 1,
       "price_subtype": "Normal"
     },
     {
@@ -1170,8 +1170,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728043,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728043/pokemon-me06-delta-reign-hakamo-o",
-      "market_cents": 20,
-      "low_cents": 19,
+      "market_cents": 9,
+      "low_cents": 3,
       "price_subtype": "Normal"
     },
     {
@@ -1185,8 +1185,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726538,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726538/pokemon-me06-delta-reign-kommo-o",
-      "market_cents": 37,
-      "low_cents": 24,
+      "market_cents": 17,
+      "low_cents": 9,
       "price_subtype": "Holofoil"
     },
     {
@@ -1200,8 +1200,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728044,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728044/pokemon-me06-delta-reign-cyclizar",
-      "market_cents": 25,
-      "low_cents": 25,
+      "market_cents": 13,
+      "low_cents": 1,
       "price_subtype": "Normal"
     },
     {
@@ -1215,8 +1215,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728045,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728045/pokemon-me06-delta-reign-tauros",
-      "market_cents": 25,
-      "low_cents": 25,
+      "market_cents": 8,
+      "low_cents": 1,
       "price_subtype": "Normal"
     },
     {
@@ -1230,8 +1230,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726539,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726539/pokemon-me06-delta-reign-eevee",
-      "market_cents": 26,
-      "low_cents": 24,
+      "market_cents": 15,
+      "low_cents": 1,
       "price_subtype": "Normal"
     },
     {
@@ -1245,8 +1245,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726540,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726540/pokemon-me06-delta-reign-delibird",
-      "market_cents": 25,
-      "low_cents": 25,
+      "market_cents": 10,
+      "low_cents": 1,
       "price_subtype": "Normal"
     },
     {
@@ -1260,8 +1260,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726541,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726541/pokemon-me06-delta-reign-azurill",
-      "market_cents": 25,
-      "low_cents": 24,
+      "market_cents": 12,
+      "low_cents": 3,
       "price_subtype": "Normal"
     },
     {
@@ -1275,8 +1275,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728046,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728046/pokemon-me06-delta-reign-swablu",
-      "market_cents": 34,
-      "low_cents": 30,
+      "market_cents": 17,
+      "low_cents": 1,
       "price_subtype": "Normal"
     },
     {
@@ -1290,8 +1290,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728047,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728047/pokemon-me06-delta-reign-altaria-082-103",
-      "market_cents": 40,
-      "low_cents": 38,
+      "market_cents": 33,
+      "low_cents": 19,
       "price_subtype": "Reverse Holofoil"
     },
     {
@@ -1305,8 +1305,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726542,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726542/pokemon-me06-delta-reign-kecleon",
-      "market_cents": 25,
-      "low_cents": 25,
+      "market_cents": 15,
+      "low_cents": 9,
       "price_subtype": "Normal"
     },
     {
@@ -1320,8 +1320,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726543,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726543/pokemon-me06-delta-reign-mega-rayquaza-ex",
-      "market_cents": 1542,
-      "low_cents": 1500,
+      "market_cents": 694,
+      "low_cents": 500,
       "price_subtype": "Holofoil"
     },
     {
@@ -1335,8 +1335,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726544,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726544/pokemon-me06-delta-reign-tornadus",
-      "market_cents": 25,
-      "low_cents": 25,
+      "market_cents": 14,
+      "low_cents": 5,
       "price_subtype": "Normal"
     },
     {
@@ -1350,8 +1350,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728048,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728048/pokemon-me06-delta-reign-fletchling",
-      "market_cents": 34,
-      "low_cents": 33,
+      "market_cents": 12,
+      "low_cents": 1,
       "price_subtype": "Normal"
     },
     {
@@ -1365,8 +1365,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728049,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728049/pokemon-me06-delta-reign-fletchinder",
-      "market_cents": 25,
-      "low_cents": 25,
+      "market_cents": 12,
+      "low_cents": 3,
       "price_subtype": "Normal"
     },
     {
@@ -1380,8 +1380,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728050,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728050/pokemon-me06-delta-reign-talonflame-ex-088-103",
-      "market_cents": 776,
-      "low_cents": 1494,
+      "market_cents": 669,
+      "low_cents": 450,
       "price_subtype": "Holofoil"
     },
     {
@@ -1395,8 +1395,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726545,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726545/pokemon-me06-delta-reign-aarune-089-103",
-      "market_cents": 110,
-      "low_cents": 75,
+      "market_cents": 26,
+      "low_cents": 10,
       "price_subtype": "Normal"
     },
     {
@@ -1410,8 +1410,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726546,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726546/pokemon-me06-delta-reign-adventure-lantern",
-      "market_cents": 78,
-      "low_cents": 60,
+      "market_cents": 19,
+      "low_cents": 10,
       "price_subtype": "Normal"
     },
     {
@@ -1425,8 +1425,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726547,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726547/pokemon-me06-delta-reign-custom-vest",
-      "market_cents": 40,
-      "low_cents": 35,
+      "market_cents": 18,
+      "low_cents": 8,
       "price_subtype": "Normal"
     },
     {
@@ -1440,8 +1440,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726548,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726548/pokemon-me06-delta-reign-emcees-hype",
-      "market_cents": 24,
-      "low_cents": 19,
+      "market_cents": 15,
+      "low_cents": 7,
       "price_subtype": "Normal"
     },
     {
@@ -1455,8 +1455,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726549,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726549/pokemon-me06-delta-reign-grisham",
-      "market_cents": 23,
-      "low_cents": 18,
+      "market_cents": 15,
+      "low_cents": 8,
       "price_subtype": "Normal"
     },
     {
@@ -1470,8 +1470,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726550,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726550/pokemon-me06-delta-reign-legendary-pyroduct-094-103-left",
-      "market_cents": 199,
-      "low_cents": 150,
+      "market_cents": 99,
+      "low_cents": 69,
       "price_subtype": "Normal"
     },
     {
@@ -1485,8 +1485,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726722,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726722/pokemon-me06-delta-reign-legendary-pyroduct-095-103-right",
-      "market_cents": 202,
-      "low_cents": 194,
+      "market_cents": 86,
+      "low_cents": 49,
       "price_subtype": "Normal"
     },
     {
@@ -1500,8 +1500,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726551,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726551/pokemon-me06-delta-reign-legendary-summit-096-103-left",
-      "market_cents": 47,
-      "low_cents": 40,
+      "market_cents": 25,
+      "low_cents": 13,
       "price_subtype": "Normal"
     },
     {
@@ -1515,8 +1515,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726721,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726721/pokemon-me06-delta-reign-legendary-summit-097-103-right",
-      "market_cents": 39,
-      "low_cents": 38,
+      "market_cents": 23,
+      "low_cents": 13,
       "price_subtype": "Normal"
     },
     {
@@ -1530,8 +1530,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726786,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726786/pokemon-me06-delta-reign-legendary-trench-098-103-left",
-      "market_cents": 199,
-      "low_cents": 100,
+      "market_cents": 47,
+      "low_cents": 25,
       "price_subtype": "Normal"
     },
     {
@@ -1545,8 +1545,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726552,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726552/pokemon-me06-delta-reign-legendary-trench-099-103-right",
-      "market_cents": 166,
-      "low_cents": 100,
+      "market_cents": 47,
+      "low_cents": 25,
       "price_subtype": "Normal"
     },
     {
@@ -1560,8 +1560,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726553,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726553/pokemon-me06-delta-reign-mega-rayquaza-cap",
-      "market_cents": 71,
-      "low_cents": 38,
+      "market_cents": 19,
+      "low_cents": 12,
       "price_subtype": "Normal"
     },
     {
@@ -1575,8 +1575,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726554,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726554/pokemon-me06-delta-reign-tasty-rice-ball",
-      "market_cents": 35,
-      "low_cents": 30,
+      "market_cents": 18,
+      "low_cents": 9,
       "price_subtype": "Normal"
     },
     {
@@ -1590,8 +1590,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726555,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726555/pokemon-me06-delta-reign-tate-and-lizas-training",
-      "market_cents": 25,
-      "low_cents": 25,
+      "market_cents": 15,
+      "low_cents": 9,
       "price_subtype": "Normal"
     },
     {
@@ -1605,8 +1605,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726556,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726556/pokemon-me06-delta-reign-zinnias-trust-103-103",
-      "market_cents": 43,
-      "low_cents": 35,
+      "market_cents": 21,
+      "low_cents": 7,
       "price_subtype": "Normal"
     },
     {
@@ -1620,8 +1620,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726557,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726557/pokemon-me06-delta-reign-masquerain-104-103",
-      "market_cents": 1036,
-      "low_cents": 676,
+      "market_cents": 477,
+      "low_cents": 350,
       "price_subtype": "Holofoil"
     },
     {
@@ -1635,8 +1635,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726558,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726558/pokemon-me06-delta-reign-sprigatito-105-103",
-      "market_cents": 1464,
-      "low_cents": 1200,
+      "market_cents": 961,
+      "low_cents": 900,
       "price_subtype": "Holofoil"
     },
     {
@@ -1650,8 +1650,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726559,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726559/pokemon-me06-delta-reign-growlithe-106-103",
-      "market_cents": 1918,
-      "low_cents": 1685,
+      "market_cents": 1591,
+      "low_cents": 1544,
       "price_subtype": "Holofoil"
     },
     {
@@ -1665,8 +1665,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726560,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726560/pokemon-me06-delta-reign-magmortar-107-103",
-      "market_cents": 658,
-      "low_cents": 397,
+      "market_cents": 323,
+      "low_cents": 250,
       "price_subtype": "Holofoil"
     },
     {
@@ -1680,8 +1680,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 727587,
       "tcgplayer_url": "https://www.tcgplayer.com/product/727587/pokemon-me06-delta-reign-electivire",
-      "market_cents": 764,
-      "low_cents": 499,
+      "market_cents": 331,
+      "low_cents": 299,
       "price_subtype": "Holofoil"
     },
     {
@@ -1695,8 +1695,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726561,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726561/pokemon-me06-delta-reign-pincurchin-109-103",
-      "market_cents": 1350,
-      "low_cents": 899,
+      "market_cents": 425,
+      "low_cents": 199,
       "price_subtype": "Holofoil"
     },
     {
@@ -1710,8 +1710,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726562,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726562/pokemon-me06-delta-reign-enamorus-110-103",
-      "market_cents": 425,
-      "low_cents": 350,
+      "market_cents": 260,
+      "low_cents": 195,
       "price_subtype": "Holofoil"
     },
     {
@@ -1725,8 +1725,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726563,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726563/pokemon-me06-delta-reign-groudon-111-103",
-      "market_cents": 3612,
-      "low_cents": 2875,
+      "market_cents": 1556,
+      "low_cents": 1399,
       "price_subtype": "Holofoil"
     },
     {
@@ -1740,8 +1740,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726564,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726564/pokemon-me06-delta-reign-zorua-112-103",
-      "market_cents": 1191,
-      "low_cents": 976,
+      "market_cents": 678,
+      "low_cents": 601,
       "price_subtype": "Holofoil"
     },
     {
@@ -1755,8 +1755,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728051,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728051/pokemon-me06-delta-reign-inkay-113-103",
-      "market_cents": 475,
-      "low_cents": 500,
+      "market_cents": 370,
+      "low_cents": 301,
       "price_subtype": "Holofoil"
     },
     {
@@ -1770,8 +1770,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726565,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726565/pokemon-me06-delta-reign-eevee-114-103",
-      "market_cents": 3739,
-      "low_cents": 2935,
+      "market_cents": 2060,
+      "low_cents": 1998,
       "price_subtype": "Holofoil"
     },
     {
@@ -1785,8 +1785,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726566,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726566/pokemon-me06-delta-reign-azurill-115-103",
-      "market_cents": 1102,
-      "low_cents": 875,
+      "market_cents": 517,
+      "low_cents": 499,
       "price_subtype": "Holofoil"
     },
     {
@@ -1800,8 +1800,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728052,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728052/pokemon-me06-delta-reign-altaria-116-103",
-      "market_cents": 2105,
-      "low_cents": 1747,
+      "market_cents": 639,
+      "low_cents": 575,
       "price_subtype": "Holofoil"
     },
     {
@@ -1815,8 +1815,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726567,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726567/pokemon-me06-delta-reign-kecleon-117-103",
-      "market_cents": 2913,
-      "low_cents": 2395,
+      "market_cents": 1457,
+      "low_cents": 1150,
       "price_subtype": "Holofoil"
     },
     {
@@ -1830,8 +1830,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 727588,
       "tcgplayer_url": "https://www.tcgplayer.com/product/727588/pokemon-me06-delta-reign-mega-golisopod-ex-118-103",
-      "market_cents": 660,
-      "low_cents": 660,
+      "market_cents": 352,
+      "low_cents": 240,
       "price_subtype": "Holofoil"
     },
     {
@@ -1845,8 +1845,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 727589,
       "tcgplayer_url": "https://www.tcgplayer.com/product/727589/pokemon-me06-delta-reign-heat-rotom-ex",
-      "market_cents": 198,
-      "low_cents": 175,
+      "market_cents": 118,
+      "low_cents": 90,
       "price_subtype": "Holofoil"
     },
     {
@@ -1860,8 +1860,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 727590,
       "tcgplayer_url": "https://www.tcgplayer.com/product/727590/pokemon-me06-delta-reign-wishiwashi-ex",
-      "market_cents": null,
-      "low_cents": 1402,
+      "market_cents": 593,
+      "low_cents": 514,
       "price_subtype": "Holofoil"
     },
     {
@@ -1875,8 +1875,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 727591,
       "tcgplayer_url": "https://www.tcgplayer.com/product/727591/pokemon-me06-delta-reign-raikou-ex-121-103",
-      "market_cents": 37,
-      "low_cents": 49,
+      "market_cents": 173,
+      "low_cents": 46,
       "price_subtype": "Holofoil"
     },
     {
@@ -1890,8 +1890,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728053,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728053/pokemon-me06-delta-reign-mega-golurk-ex-122-103",
-      "market_cents": 1125,
-      "low_cents": 499,
+      "market_cents": 372,
+      "low_cents": 270,
       "price_subtype": "Holofoil"
     },
     {
@@ -1905,8 +1905,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728054,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728054/pokemon-me06-delta-reign-mega-malamar-ex",
-      "market_cents": 398,
-      "low_cents": 396,
+      "market_cents": 340,
+      "low_cents": 290,
       "price_subtype": "Holofoil"
     },
     {
@@ -1920,9 +1920,9 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728055,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728055/pokemon-me06-delta-reign-talonflame-ex-124-103",
-      "market_cents": null,
-      "low_cents": null,
-      "price_subtype": null
+      "market_cents": 1227,
+      "low_cents": 1018,
+      "price_subtype": "Holofoil"
     },
     {
       "number": 125,
@@ -1935,8 +1935,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726568,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726568/pokemon-me06-delta-reign-aarune-125-103",
-      "market_cents": null,
-      "low_cents": 773,
+      "market_cents": 368,
+      "low_cents": 300,
       "price_subtype": "Holofoil"
     },
     {
@@ -1950,8 +1950,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726569,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726569/pokemon-me06-delta-reign-adventure-lantern-126-103",
-      "market_cents": 718,
-      "low_cents": 697,
+      "market_cents": 580,
+      "low_cents": 495,
       "price_subtype": "Holofoil"
     },
     {
@@ -1965,8 +1965,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726570,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726570/pokemon-me06-delta-reign-custom-vest-127-103",
-      "market_cents": 247,
-      "low_cents": 100,
+      "market_cents": 143,
+      "low_cents": 75,
       "price_subtype": "Holofoil"
     },
     {
@@ -1980,8 +1980,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726571,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726571/pokemon-me06-delta-reign-emcees-hype-128-103",
-      "market_cents": null,
-      "low_cents": 649,
+      "market_cents": 339,
+      "low_cents": 299,
       "price_subtype": "Holofoil"
     },
     {
@@ -1995,8 +1995,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728056,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728056/pokemon-me06-delta-reign-pokemon-catcher",
-      "market_cents": 725,
-      "low_cents": 750,
+      "market_cents": 384,
+      "low_cents": 299,
       "price_subtype": "Holofoil"
     },
     {
@@ -2010,8 +2010,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726572,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726572/pokemon-me06-delta-reign-tate-and-lizas-training-130-103",
-      "market_cents": 728,
-      "low_cents": 599,
+      "market_cents": 526,
+      "low_cents": 429,
       "price_subtype": "Holofoil"
     },
     {
@@ -2025,8 +2025,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726573,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726573/pokemon-me06-delta-reign-zinnias-trust-131-103",
-      "market_cents": 1328,
-      "low_cents": 1000,
+      "market_cents": 722,
+      "low_cents": 500,
       "price_subtype": "Holofoil"
     },
     {
@@ -2040,8 +2040,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728057,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728057/pokemon-me06-delta-reign-bubbly-w-energy",
-      "market_cents": 361,
-      "low_cents": 250,
+      "market_cents": 205,
+      "low_cents": 100,
       "price_subtype": "Holofoil"
     },
     {
@@ -2055,8 +2055,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728058,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728058/pokemon-me06-delta-reign-growing-g-energy",
-      "market_cents": 796,
-      "low_cents": 397,
+      "market_cents": 372,
+      "low_cents": 198,
       "price_subtype": "Holofoil"
     },
     {
@@ -2070,8 +2070,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728059,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728059/pokemon-me06-delta-reign-nitro-r-energy",
-      "market_cents": 1900,
-      "low_cents": 1299,
+      "market_cents": 900,
+      "low_cents": 446,
       "price_subtype": "Holofoil"
     },
     {
@@ -2085,8 +2085,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 727592,
       "tcgplayer_url": "https://www.tcgplayer.com/product/727592/pokemon-me06-delta-reign-mega-golisopod-ex-135-103",
-      "market_cents": null,
-      "low_cents": 3700,
+      "market_cents": 2112,
+      "low_cents": 2049,
       "price_subtype": "Holofoil"
     },
     {
@@ -2100,8 +2100,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726574,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726574/pokemon-me06-delta-reign-raikou-ex",
-      "market_cents": null,
-      "low_cents": 9870,
+      "market_cents": 8156,
+      "low_cents": 8850,
       "price_subtype": "Holofoil"
     },
     {
@@ -2115,8 +2115,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728060,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728060/pokemon-me06-delta-reign-mega-golurk-ex-137-103",
-      "market_cents": 4999,
-      "low_cents": 3799,
+      "market_cents": 3205,
+      "low_cents": 2900,
       "price_subtype": "Holofoil"
     },
     {
@@ -2130,8 +2130,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728061,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728061/pokemon-me06-delta-reign-mega-rayquaza-ex-138-103",
-      "market_cents": 39794,
-      "low_cents": 44840,
+      "market_cents": 32781,
+      "low_cents": 33995,
       "price_subtype": "Holofoil"
     },
     {
@@ -2145,8 +2145,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726575,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726575/pokemon-me06-delta-reign-aarune-139-103",
-      "market_cents": 1335,
-      "low_cents": 1500,
+      "market_cents": 1181,
+      "low_cents": 1000,
       "price_subtype": "Holofoil"
     },
     {
@@ -2160,8 +2160,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 726576,
       "tcgplayer_url": "https://www.tcgplayer.com/product/726576/pokemon-me06-delta-reign-zinnias-trust-140-103",
-      "market_cents": 7494,
-      "low_cents": 6569,
+      "market_cents": 3842,
+      "low_cents": 3300,
       "price_subtype": "Holofoil"
     },
     {
@@ -2175,8 +2175,8 @@
       "print_denominator": 103,
       "tcgcsv_product_id": 728062,
       "tcgplayer_url": "https://www.tcgplayer.com/product/728062/pokemon-me06-delta-reign-mega-rayquaza-ex-141-103",
-      "market_cents": null,
-      "low_cents": 40000,
+      "market_cents": 34935,
+      "low_cents": 34999,
       "price_subtype": "Holofoil"
     }
   ],
@@ -2186,8 +2186,8 @@
       "product_type": "blister",
       "tcgcsv_product_id": 712093,
       "tcgplayer_url": "https://www.tcgplayer.com/product/712093/pokemon-me06-delta-reign-delta-reign-3-pack-blister-seel",
-      "market_cents": 3178,
-      "low_cents": 2828,
+      "market_cents": 2515,
+      "low_cents": 1787,
       "price_subtype": "Normal"
     },
     {
@@ -2195,8 +2195,8 @@
       "product_type": "booster_box",
       "tcgcsv_product_id": 712094,
       "tcgplayer_url": "https://www.tcgplayer.com/product/712094/pokemon-me06-delta-reign-delta-reign-booster-box",
-      "market_cents": 22295,
-      "low_cents": 22002,
+      "market_cents": 21501,
+      "low_cents": 18500,
       "price_subtype": "Normal"
     },
     {
@@ -2204,8 +2204,8 @@
       "product_type": "case",
       "tcgcsv_product_id": 712096,
       "tcgplayer_url": "https://www.tcgplayer.com/product/712096/pokemon-me06-delta-reign-delta-reign-booster-box-case",
-      "market_cents": 132777,
-      "low_cents": 129218,
+      "market_cents": 129149,
+      "low_cents": 126997,
       "price_subtype": "Normal"
     },
     {
@@ -2213,8 +2213,8 @@
       "product_type": "bundle",
       "tcgcsv_product_id": 712097,
       "tcgplayer_url": "https://www.tcgplayer.com/product/712097/pokemon-me06-delta-reign-delta-reign-booster-bundle",
-      "market_cents": 5395,
-      "low_cents": 4995,
+      "market_cents": 4103,
+      "low_cents": 3400,
       "price_subtype": "Normal"
     },
     {
@@ -2222,8 +2222,8 @@
       "product_type": "case",
       "tcgcsv_product_id": 712098,
       "tcgplayer_url": "https://www.tcgplayer.com/product/712098/pokemon-me06-delta-reign-delta-reign-booster-bundle-case",
-      "market_cents": 128750,
-      "low_cents": 112498,
+      "market_cents": 119445,
+      "low_cents": 111399,
       "price_subtype": "Normal"
     },
     {
@@ -2231,8 +2231,8 @@
       "product_type": "booster_pack",
       "tcgcsv_product_id": 712099,
       "tcgplayer_url": "https://www.tcgplayer.com/product/712099/pokemon-me06-delta-reign-delta-reign-booster-pack",
-      "market_cents": 847,
-      "low_cents": 499,
+      "market_cents": 777,
+      "low_cents": 571,
       "price_subtype": "Normal"
     },
     {
@@ -2240,8 +2240,8 @@
       "product_type": "booster_pack",
       "tcgcsv_product_id": 712100,
       "tcgplayer_url": "https://www.tcgplayer.com/product/712100/pokemon-me06-delta-reign-delta-reign-booster-pack-art-bundle-set-of-4",
-      "market_cents": 6344,
-      "low_cents": 5299,
+      "market_cents": 5954,
+      "low_cents": 3500,
       "price_subtype": "Normal"
     },
     {
@@ -2249,7 +2249,7 @@
       "product_type": "collection",
       "tcgcsv_product_id": 712101,
       "tcgplayer_url": "https://www.tcgplayer.com/product/712101/pokemon-me06-delta-reign-delta-reign-build-and-battle-box",
-      "market_cents": 4578,
+      "market_cents": 4629,
       "low_cents": 4400,
       "price_subtype": "Normal"
     },
@@ -2258,8 +2258,8 @@
       "product_type": "etb",
       "tcgcsv_product_id": 712102,
       "tcgplayer_url": "https://www.tcgplayer.com/product/712102/pokemon-me06-delta-reign-delta-reign-elite-trainer-box",
-      "market_cents": 10318,
-      "low_cents": 9599,
+      "market_cents": 8588,
+      "low_cents": 7800,
       "price_subtype": "Normal"
     },
     {
@@ -2267,8 +2267,8 @@
       "product_type": "case",
       "tcgcsv_product_id": 712103,
       "tcgplayer_url": "https://www.tcgplayer.com/product/712103/pokemon-me06-delta-reign-delta-reign-elite-trainer-box-case",
-      "market_cents": 103449,
-      "low_cents": 93199,
+      "market_cents": 97274,
+      "low_cents": 87500,
       "price_subtype": "Normal"
     },
     {
@@ -2285,8 +2285,8 @@
       "product_type": "pc_etb",
       "tcgcsv_product_id": 712104,
       "tcgplayer_url": "https://www.tcgplayer.com/product/712104/pokemon-me06-delta-reign-delta-reign-pokemon-center-elite-trainer-box-exclusive",
-      "market_cents": 29938,
-      "low_cents": 35000,
+      "market_cents": 26986,
+      "low_cents": 21998,
       "price_subtype": "Normal"
     },
     {
@@ -2339,8 +2339,8 @@
       "product_type": "blister",
       "tcgcsv_product_id": 712108,
       "tcgplayer_url": "https://www.tcgplayer.com/product/712108/pokemon-me06-delta-reign-delta-reign-single-pack-blister-spritzee",
-      "market_cents": 1712,
-      "low_cents": 1100,
+      "market_cents": 1449,
+      "low_cents": 643,
       "price_subtype": "Normal"
     },
     {
@@ -2348,8 +2348,8 @@
       "product_type": "case",
       "tcgcsv_product_id": 712111,
       "tcgplayer_url": "https://www.tcgplayer.com/product/712111/pokemon-me06-delta-reign-delta-reign-sleeved-booster-case",
-      "market_cents": 112346,
-      "low_cents": 99900,
+      "market_cents": 111011,
+      "low_cents": 94999,
       "price_subtype": "Normal"
     },
     {
@@ -2357,8 +2357,8 @@
       "product_type": "booster_pack",
       "tcgcsv_product_id": 712112,
       "tcgplayer_url": "https://www.tcgplayer.com/product/712112/pokemon-me06-delta-reign-delta-reign-sleeved-booster-pack",
-      "market_cents": 1362,
-      "low_cents": 1100,
+      "market_cents": 1156,
+      "low_cents": 699,
       "price_subtype": "Normal"
     },
     {
@@ -2367,10 +2367,10 @@
       "tcgcsv_product_id": 712113,
       "tcgplayer_url": "https://www.tcgplayer.com/product/712113/pokemon-me06-delta-reign-delta-reign-sleeved-booster-pack-art-bundle-set-of-4",
       "market_cents": 5735,
-      "low_cents": 5560,
+      "low_cents": 4081,
       "price_subtype": "Normal"
     }
   ],
-  "retrieved_at_utc": "2026-11-06T06:50:10Z",
-  "prices_as_of_utc": "2026-11-05T20:05:46Z"
+  "retrieved_at_utc": "2026-11-06T20:11:22Z",
+  "prices_as_of_utc": "2026-11-06T20:05:28Z"
 }
