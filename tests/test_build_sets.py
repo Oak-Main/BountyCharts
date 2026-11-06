@@ -264,6 +264,22 @@ class UnfinishedCopyIsKeptOutOfSearch(unittest.TestCase):
             root = self._build(tmp)
             self.assertTrue((root / "site" / "sets" / "delta-reign.html").is_file())
 
+    def test_a_marker_that_comes_back_takes_a_listed_set_off_the_sitemap(self):
+        """The hold must remove an entry that is already listed, not only
+        decline to add one: the tests above start from a sitemap that never
+        had the set in it."""
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self._build(tmp, fill_copy)
+            sitemap = root / "site" / "sitemap.xml"
+            self.assertIn("<loc>https://bountycharts.com/sets/delta-reign</loc>",
+                          read(sitemap), "precondition: the finished page is listed")
+            # Put the author's markers back, as if the copy were reverted.
+            shutil.copyfile(TEMPLATE, root / "templates" / "set.html")
+            result = build_in(root)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertNotIn("/sets/delta-reign", read(sitemap))
+            self.assertEqual(self._robots(root), "noindex,follow")
+
     def test_one_remaining_marker_keeps_the_page_held(self):
         def fill_only_the_description(root: pathlib.Path):
             fill_copy(root, ("[[COPY: delta-reign-description]]",))
