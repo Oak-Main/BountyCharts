@@ -66,7 +66,8 @@ def verify(slug):
     live = SetPage(markup)
     if live.meta != expected.meta or live.text != expected.text or live.meta["canonical"] != url:
         raise ValueError("live content or metadata differs from the reviewed page")
-    indexable = "index" in live.meta["robots"].split(",")
+    robots_tokens = {part.strip().lower() for part in live.meta["robots"].split(",")}
+    indexable = robots_tokens.isdisjoint({"noindex", "none"})
     if indexable and ("noindex" in directives or "none" in directives):
         raise ValueError(f"unexpected X-Robots-Tag: {directives}")
     sitemap, _ = get(f"{ORIGIN}/sitemap.xml")

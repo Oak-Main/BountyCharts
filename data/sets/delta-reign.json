@@ -18,7 +18,8 @@
     "prices_url": "https://tcgcsv.com/tcgplayer/3/24831/prices",
     "catalogue_url": "https://tcgcsv.com/tcgplayer/3/24831/products",
     "group_id": 24831,
-    "retrieved_at_utc": "2026-11-06T06:50:10Z"
+    "retrieved_at_utc": "2026-11-06T06:50:10Z",
+    "rows_sha256": "964376936cf74505aef85bdf77be1e64e5ec7544aee5caff7faa7582db4f6c01"
   },
   "sources": [
     {

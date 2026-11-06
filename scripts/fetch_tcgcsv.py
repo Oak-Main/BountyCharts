@@ -44,6 +44,7 @@ sites cannot publish different numbers for the same product. Concretely:
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
 import pathlib
@@ -282,6 +283,12 @@ def parse_catalogue(products: list[dict], prices: dict[int, list[dict]]) -> tupl
 # ---------------------------------------------------------------------------
 
 
+def rows_digest(cards: list, sealed: list) -> str:
+    """Fingerprint the complete normalized catalogue used for a fast-path check."""
+    encoded = json.dumps([cards, sealed], ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(encoded.encode("utf-8")).hexdigest()
+
+
 def refresh_set(path: pathlib.Path, rebuild: bool) -> int:
     data = json.loads(path.read_text(encoding="utf-8"))
     group_id = data.get("tcgcsv_group_id")
@@ -293,7 +300,9 @@ def refresh_set(path: pathlib.Path, rebuild: bool) -> int:
     catalogue_url, prices_url = f"{base}/products", f"{base}/prices"
     try:
         as_of = feed_time()
-        if not rebuild and data.get("prices_as_of_utc") == as_of and data.get("cards"):
+        if (not rebuild and data.get("prices_as_of_utc") == as_of and data.get("cards")
+                and isinstance(data.get("sealed"), list)
+                and data.get("price_source", {}).get("rows_sha256") == rows_digest(data["cards"], data["sealed"])):
             print(f"ok    {path.name}: already holds TCGCSV snapshot {as_of}")
             return 0
         time.sleep(TCGCSV_REQUEST_GAP_MS / 1000)
@@ -336,7 +345,7 @@ def refresh_set(path: pathlib.Path, rebuild: bool) -> int:
     source = data.setdefault("price_source", {})
     source.setdefault("name", "TCGplayer market price via TCGCSV")
     source.update(prices_url=prices_url, catalogue_url=catalogue_url, group_id=group_id,
-                  retrieved_at_utc=retrieved_at)
+                  retrieved_at_utc=retrieved_at, rows_sha256=rows_digest(cards, sealed))
     for entry in data.get("sources", []):
         if entry.get("url") in (catalogue_url, prices_url):
             entry["retrieved_at_utc"] = retrieved_at

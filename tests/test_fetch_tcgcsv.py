@@ -59,6 +59,14 @@ class RefreshTest(unittest.TestCase):
             unchanged.assert_called_once_with(fetcher.TCGCSV_UPDATE_URL)
         self.assertEqual(self.path.read_bytes(), content)
 
+    def test_current_timestamp_with_damaged_sealed_rows_is_rebuilt(self):
+        self.assertEqual(self.run_refresh(), 0)
+        data = json.loads(self.path.read_bytes())
+        data["sealed"] = [{"name": "Damaged row", "market_cents": 999}]
+        self.path.write_text(json.dumps(data))
+        self.assertEqual(self.run_refresh(), 0)
+        self.assertEqual(json.loads(self.path.read_bytes())["sealed"], [])
+
     def test_failed_partial_and_mixed_snapshots_preserve_the_file(self):
         original = self.path.read_bytes()
         for url, result in [(self.products, '{"success":true,"results":[]}'),
