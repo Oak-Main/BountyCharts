@@ -149,6 +149,7 @@ jobs:
           git push --force-with-lease="$ref:$PREVIOUS_HEAD" origin "$head:$ref"
 
       - name: Open a new draft pull request
+        id: open_draft
         if: steps.candidate.outputs.changed == 'true' && steps.review.outputs.number == ''
         continue-on-error: true
         uses: peter-evans/create-pull-request@v7
@@ -179,16 +180,38 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           EXPECTED_TREE: ${{ steps.candidate.outputs.tree }}
+          PR_NUMBER: ${{ steps.review.outputs.number }}
+          OPEN_OUTCOME: ${{ steps.open_draft.outcome }}
         run: |
-          git fetch --no-tags --depth=2 origin "refs/heads/$REVIEW_BRANCH"
-          head=$(git rev-parse FETCH_HEAD)
-          test "$(git rev-parse 'FETCH_HEAD^{tree}')" = "$EXPECTED_TREE"
-          test "$(git rev-parse 'FETCH_HEAD^')" = "$GITHUB_SHA"
-          pr=$(gh pr list --head "$REVIEW_BRANCH" --base main --state open --json isDraft,headRefOid,url --jq '.[0] // empty')
-          if [[ -n "$pr" ]]; then
-            jq -e --arg sha "$head" '.isDraft and .headRefOid == $sha' <<< "$pr" > /dev/null
-            status="DRAFT_OPEN"
-          else
-            status="DRAFT_REQUIRED"
-          fi
-          echo "$status branch=$REVIEW_BRANCH base=$GITHUB_SHA head=$head tree=$EXPECTED_TREE" | tee -a "$GITHUB_STEP_SUMMARY"
+          set -euo pipefail
+          # A successful force-with-lease can precede the PR API's head update.
+          # Observe again without writing to the ref or changing review state.
+          for delay in 0 2 4 8 16 30; do
+            sleep "$delay"
+            git fetch --no-tags --depth=2 origin "refs/heads/$REVIEW_BRANCH" || continue
+            head=$(git rev-parse FETCH_HEAD)
+            parent=$(git cat-file -p "$head" | sed -n '/^$/q; s/^parent //p')
+            if [[ "$(git rev-parse 'FETCH_HEAD^{tree}')" != "$EXPECTED_TREE" || "$parent" != "$GITHUB_SHA" ]]; then
+              echo "Waiting for the validated branch tree and parent."
+              continue
+            fi
+            if [[ -n "$PR_NUMBER" ]]; then
+              pr=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER") || continue
+            else
+              pr=$(gh api --method GET "repos/$GITHUB_REPOSITORY/pulls" -f state=open -f base=main \
+                -f "head=$GITHUB_REPOSITORY_OWNER:$REVIEW_BRANCH" --jq '.[0] // empty') || continue
+            fi
+            if [[ -z "$pr" && -z "$PR_NUMBER" && "$OPEN_OUTCOME" == failure ]]; then
+              status=DRAFT_REQUIRED
+            elif [[ -n "$pr" ]] && jq -e --arg sha "$head" --arg branch "$REVIEW_BRANCH" --arg repo "$GITHUB_REPOSITORY" \
+              '.state == "open" and .draft and .base.ref == "main" and .head.ref == $branch and .head.repo.full_name == $repo and .head.sha == $sha' <<< "$pr" >/dev/null; then
+              status=DRAFT_OPEN
+            else
+              echo "Waiting for the draft PR to report branch head $head."
+              continue
+            fi
+            echo "$status branch=$REVIEW_BRANCH base=$GITHUB_SHA head=$head tree=$EXPECTED_TREE" | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          done
+          echo "::error::Could not verify the validated ref and draft state within 60 seconds."
+          exit 1
