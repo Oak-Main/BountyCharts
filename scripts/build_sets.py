@@ -22,8 +22,8 @@ Three things happen here, and only these three:
      sitemap rather than advertised as an indexable page with nothing on it.
      The same applies to a page whose copy has not been written yet.
 
-  3. site/_redirects gets one clean-URL rewrite per set, so /sets/<slug>
-     resolves whether or not Cloudflare Pages' automatic HTML handling is on.
+  3. The builder rejects explicit /sets/ rewrites. Cloudflare Pages serves
+     extensionless URLs itself. Rewriting them to .html creates a redirect loop.
 
 The page carries no prices of its own. Prices live in the data file and are
 refreshed by scripts/fetch_tcgcsv.py, which reads the same TCGCSV files the
@@ -87,7 +87,7 @@ def configure(root: pathlib.Path) -> None:
 # is the same constraint the rest of this repo runs under.
 # ---------------------------------------------------------------------------
 
-_VAR_RE = re.compile(r"\{\{\s*([A-Za-z_][\w.]*)\s*\}\}")
+_VAR_RE = re.compile(r"\{\{\s*(?:(json)\s+)?([A-Za-z_][\w.]*)\s*\}\}")
 _SECTION_RE = re.compile(
     r"\{\{#(if|unless|each)\s+([A-Za-z_][\w.]*)\s*\}\}(.*?)\{\{/\1\}\}",
     re.S,
@@ -128,7 +128,11 @@ def render(template: str, scope: dict) -> str:
             return expand(body, current) if truthy else ""
 
         def replace_var(match: re.Match) -> str:
-            value = lookup(current, match.group(1))
+            value = lookup(current, match.group(2))
+            if match.group(1) == "json":
+                # script elements are raw text: HTML entities would corrupt
+                # the value, while a literal </script> would end the element.
+                return json.dumps(value, ensure_ascii=False).replace("<", "\\u003c")
             if value is None:
                 return ""
             return html.escape(str(value), quote=True)
@@ -221,9 +225,9 @@ def price_verdict(cards: list[dict]) -> dict:
         # The opening claim follows the numbers rather than asserting a shape
         # every set is assumed to have.
         "verdict_lead": (
-            "Most of this set\u2019s value sits in a few cards."
+            "Most of the quoted value sits in a few cards."
             if share >= 50 else
-            "Value in this set is spread across many cards, not a handful."
+            "The quoted value is spread across many cards."
         ),
         "verdict_under_dollar_phrase": (
             "none trades under $1" if under == 0 else
@@ -233,23 +237,22 @@ def price_verdict(cards: list[dict]) -> dict:
         "verdict_priced_count": len(priced),
         "verdict_top10_share": share,
         "verdict_top_name": top.get("name") or "",
+        "verdict_top_number": top.get("print_number") or "",
         "verdict_top_rarity": top.get("rarity") or "Unspecified",
         "verdict_top_price": cents_to_display(top["market_cents"]),
         "verdict_under_dollar": under,
         "verdict_listing_only": "",
     }
-    # A card can have live listings and no market price yet (no sales). When
-    # its cheapest listing is above the top market price, leaving it out would
-    # misstate where the value is.
+    # Compare a low asking price only to reported market averages.
     listed = [c for c in cards
               if c.get("market_cents") is None and c.get("low_cents") is not None]
     if listed:
         dearest = max(listed, key=lambda c: int(c["low_cents"]))
         if int(dearest["low_cents"]) > int(top["market_cents"]):
+            identifier = " ".join(filter(None, (dearest.get("name"), dearest.get("print_number"))))
             verdict["verdict_listing_only"] = (
-                f" {dearest.get('name')} ({dearest.get('rarity') or 'Unspecified'}) "
-                "has no market price yet; its lowest listing is "
-                f"{cents_to_display(dearest['low_cents'])}."
+                f" {identifier} ({dearest.get('rarity') or 'Unspecified'}) "
+                f"has no market price yet. Its lowest listed ask is {cents_to_display(dearest['low_cents'])}."
             )
     return verdict
 
@@ -270,43 +273,47 @@ def long_date(iso: str) -> str:
 def seo_description(set_meta: dict, n_cards: int, n_sealed: int) -> str:
     """One sourced line for the meta, OG, JSON-LD and lede, built from the data
     file so it is specific to the set and true for whatever the file holds."""
+    if set_meta.get("description"):
+        return set_meta["description"]
     name = set_meta.get("short_name") or set_meta.get("name") or "This set"
     code = set_meta.get("set_code")
     head = f"{name} ({code})" if code else name
-    parts = [f"{head} prices: TCGplayer market and low prices for all {n_cards} listed cards"]
+    parts = [f"Browse {head}, with {n_cards} listed cards"]
     if n_sealed:
         parts.append(f" and {n_sealed} sealed products")
     release = set_meta.get("release_date")
     if release:
         parts.append(f" from the {long_date(release)} release")
-    parts.append(", with sources.")
+    parts.append(". Compare TCGplayer prices where available.")
     return "".join(parts)
 
 
-def build_scope(data: dict) -> dict:
+def build_scope(data: dict, slug: str | None = None) -> dict:
     cards = list(data.get("cards") or [])
     sealed = list(data.get("sealed") or [])
     retrieved = data.get("retrieved_at_utc") or ""
     set_meta = data.get("set") or {}
-    slug = data.get("slug") or ""
+    slug = slug or data.get("slug") or ""
 
-    for card in cards:
-        card["market_display"] = cents_to_display(card.get("market_cents"))
-        card["low_display"] = cents_to_display(card.get("low_cents"))
-    for product in sealed:
-        product["market_display"] = cents_to_display(product.get("market_cents"))
-        product["low_display"] = cents_to_display(product.get("low_cents"))
+    for row in [*cards, *sealed]:
+        row["printing_display"] = row.get("price_subtype") or "No printing quoted"
+        for field, missing in (("market", "No market price"), ("low", "No low quoted")):
+            value = row.get(f"{field}_cents")
+            row[f"{field}_display"] = cents_to_display(value) if value is not None else missing
+            row[f"{field}_class"] = "price" if value is not None else "price none"
 
     state = price_state(data, cards, sealed)
     prices_as_of = data.get("prices_as_of_utc") or retrieved
 
     scope = {
         "slug": slug,
+        "page_title": f"{set_meta.get('name', '')} — card list and prices",
         "canonical_url": f"{SITE_URL}/sets/{slug}",
         "set": set_meta,
         "set_size": len(cards),
         "set_size_label": data.get("set_size_label") or str(len(cards)),
         "cards_listed": len(cards),
+        "cards_priced": sum(c.get("market_cents") is not None for c in cards),
         "cards": cards,
         "sealed": sealed,
         "rarity_breakdown": rarity_breakdown(cards),
@@ -316,15 +323,12 @@ def build_scope(data: dict) -> dict:
         "prices_as_of_display": prices_as_of.replace("T", " ").replace("Z", " UTC")
         if prices_as_of else "—",
         "retrieved_at_utc": retrieved,
+        "sources": data.get("sources") or [],
         "robots_content": ROBOTS_INDEXABLE,
         "prices_pending": state == "from-release-day",
         "prices_pending_note": (
-            "Prices from release day. This expansion releases "
-            f"{set_meta.get('release_date') or 'soon'}; the "
-            "market has no price history for it yet, so the price columns stay "
-            "empty until the first close. The columns are wired to the same "
-            "TCGCSV feed the rest of this site reads and fill on the first run "
-            "after release."
+            f"Set release: {set_meta.get('release_date') or 'date pending'}. "
+            "TCGCSV has yet to report a market price for a numbered card in this snapshot."
         ),
     }
     scope.update(price_verdict(cards))
@@ -373,11 +377,10 @@ def update_sitemap(managed: dict[str, dict], today: str) -> str:
     """
     path = SITE / "sitemap.xml"
     text = path.read_text(encoding="utf-8")
-    managed_urls = {info["url"]: slug for slug, info in managed.items()}
     kept = []
     for match in _URL_BLOCK_RE.finditer(text):
         block = match.group(0)
-        if _loc_of(block) not in managed_urls:
+        if not _loc_of(block).startswith(f"{SITE_URL}/sets/"):
             kept.append(block)
 
     for slug, info in sorted(managed.items()):
@@ -464,11 +467,14 @@ def main(argv: list[str] | None = None) -> int:
     for path in sorted(DATA.glob("*.json")):
         data = json.loads(path.read_text(encoding="utf-8"))
         slug = data.get("slug") or path.stem
-        scope = build_scope(data)
+        if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", slug) or slug in managed:
+            print(f"FAIL  {path.name}: invalid or duplicate set slug {slug!r}")
+            return 1
+        scope = build_scope(data, slug)
         out = SETS_OUT / f"{slug}.html"
         page = render(template, scope)
         unresolved = sorted(set(COPY_MARKER_RE.findall(page)))
-        if unresolved:
+        if unresolved or not scope["cards"]:
             # Unwritten copy: keep the page reachable but out of search.
             scope["robots_content"] = ROBOTS_HELD
             page = render(template, scope)
@@ -490,6 +496,10 @@ def main(argv: list[str] | None = None) -> int:
             print(f"hold  {slug}: {len(unresolved)} unfilled copy marker(s) "
                   f"({', '.join(unresolved)}) -> noindex, kept out of the sitemap")
 
+    orphaned = sorted(p.name for p in SETS_OUT.glob("*.html") if p.stem not in managed)
+    if orphaned:
+        print("FAIL  set pages without source data: " + ", ".join(orphaned))
+        return 1
     update_sitemap(managed, datetime.now(timezone.utc).date().isoformat())
     offenders = check_redirects_are_clean(list(managed))
     if offenders:

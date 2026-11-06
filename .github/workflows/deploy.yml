@@ -8,6 +8,7 @@ on:
       - 'data/**'
       - 'templates/**'
       - 'scripts/validate_site.py'
+      - 'scripts/verify_live_set.py'
       - 'scripts/build_sets.py'
       - 'scripts/fetch_tcgcsv.py'
       - 'tests/**'
@@ -21,6 +22,7 @@ on:
       - 'data/**'
       - 'templates/**'
       - 'scripts/validate_site.py'
+      - 'scripts/verify_live_set.py'
       - 'scripts/build_sets.py'
       - 'scripts/fetch_tcgcsv.py'
       - 'tests/**'
@@ -117,4 +119,8 @@ jobs:
       - name: Report skipped deploy
         if: steps.creds.outputs.ready != 'true'
         run: |
-          echo "::notice title=Deploy skipped::Cloudflare credentials are not configured, so nothing was published. Site validation passed and the build is deploy-ready. Add CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID (docs/deployment/cloudflare.md, steps 3-4) and this job will publish automatically."
+          echo "::notice title=Direct upload skipped::Cloudflare Pages Git integration handles the deployment. Production pushes are verified against the custom domain below."
+
+      - name: Verify Delta Reign on the production domain
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && steps.creds.outputs.ready == 'true'))
+        run: python3 scripts/verify_live_set.py delta-reign

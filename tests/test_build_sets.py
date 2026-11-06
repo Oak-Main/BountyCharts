@@ -25,6 +25,7 @@ Standard library only, matching the rest of the repo.
 from __future__ import annotations
 
 import json
+import html
 import pathlib
 import re
 import shutil
@@ -136,7 +137,8 @@ class SitemapIsGatedOnTheDataFile(unittest.TestCase):
             root = self._rebuild(pathlib.Path(tmp), empty_the_data_file)
             page = root / "site" / "sets" / "delta-reign.html"
             self.assertTrue(page.is_file(), "the page must still be rendered")
-            self.assertIn("Prices from release day", read(page))
+            self.assertIn("yet to report a market price", read(page))
+            self.assertIn('content="noindex,follow"', read(page))
 
     def test_building_twice_does_not_duplicate_the_entry(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -189,13 +191,20 @@ class PriceColumnsAreWired(unittest.TestCase):
             display = f"${card['market_cents'] / 100:,.2f}"
             self.assertIn(display, self.page)
 
-    def test_an_unpriced_card_shows_a_dash_not_a_zero(self):
-        """A zero would read as a price. An absent price must look absent."""
-        data = json.loads(read(DATA))
-        unpriced = [c for c in data["cards"] if c["market_cents"] is None]
-        self.assertTrue(unpriced, "the feed should leave some cards without "
-                                   "a market price yet")
-        self.assertIn('<td class="price">—</td>', self.page)
+    def test_an_unpriced_card_keeps_its_own_low_ask(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = copy_repo(pathlib.Path(tmp))
+            path = root / "data/sets/delta-reign.json"
+            data = json.loads(read(path))
+            card = data["cards"][0]
+            card.update(market_cents=None, low_cents=123)
+            path.write_text(json.dumps(data), encoding="utf-8")
+            self.assertEqual(build_in(root).returncode, 0)
+            page = read(root / "site/sets/delta-reign.html")
+        row = next(tr for tr in re.findall(r"<tr>(.*?)</tr>", page, re.S)
+                   if f'<td class="no">{card["print_number"]}</td>' in tr)
+        self.assertIn('<td class="price none">No market price</td>', row)
+        self.assertIn('<td class="price">$1.23</td>', row)
 
     def test_the_as_of_timestamp_is_on_the_page(self):
         data = json.loads(read(DATA))
@@ -217,17 +226,33 @@ class TheCopyIsWritten(unittest.TestCase):
         meta = re.search(r'<meta name="description" content="([^"]+)">', page).group(1)
         self.assertIn(f'<meta property="og:description" content="{meta}">', page)
         self.assertIn(f'<p class="lede">{meta}</p>', page)
-        self.assertIn(f'"description": "{meta}"', page)
+        structured = json.loads(re.search(r'<script type="application/ld\+json">(.*?)</script>', page, re.S)[1])
+        self.assertEqual(structured["description"], html.unescape(meta))
         self.assertLessEqual(len(meta), 160, "meta description fits a result snippet")
 
     def test_the_description_is_specific_to_the_set(self):
         data = json.loads(read(DATA))
         meta = re.search(r'<meta name="description" content="([^"]+)">', read(PAGE)).group(1)
         self.assertIn(data["set"]["short_name"], meta)
-        self.assertIn(data["set"]["set_code"], meta)
-        self.assertIn(f'all {len(data["cards"])} listed cards', meta)
-        self.assertIn(f'{len(data["sealed"])} sealed products', meta)
-        self.assertIn("November 6, 2026", meta)
+        self.assertEqual(html.unescape(meta), data["set"]["description"])
+        self.assertIn("Mega Rayquaza ex", meta)
+        self.assertIn("Legendary Stadiums", meta)
+
+    def test_structured_data_round_trips_script_sensitive_set_copy(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = copy_repo(pathlib.Path(tmp))
+            path = root / "data/sets/delta-reign.json"
+            data = json.loads(read(path))
+            data.pop("slug")
+            value = "Collector's \"A&B\" </script> edition"
+            data["set"].update(name=value, description=value)
+            path.write_text(json.dumps(data), encoding="utf-8")
+            self.assertEqual(build_in(root).returncode, 0)
+            page = read(root / "site/sets/delta-reign.html")
+        structured = json.loads(re.search(r'<script type="application/ld\+json">(.*?)</script>', page, re.S)[1])
+        self.assertEqual(structured["description"], value)
+        self.assertEqual(structured["about"]["name"], value)
+        self.assertEqual(structured["url"], "https://bountycharts.com/sets/delta-reign")
 
 
 class TheVerdictComesFromThePrices(unittest.TestCase):
@@ -583,22 +608,7 @@ class TheGateAcceptsTheSetPage(unittest.TestCase):
             [sys.executable, "scripts/validate_site.py"],
             cwd=ROOT, capture_output=True, text=True,
         )
-        # On a Windows checkout with core.autocrlf=true, the fingerprinted
-        # asset's on-disk hash differs from its name, because the checkout
-        # rewrote its line endings. GitHub Actions checks out with LF, so the
-        # hash matches there. Normalise before comparing so this test does
-        # not encode a Windows-only failure.
-        out = result.stdout + result.stderr
-        asset_failure = "does not match its content" in out
-        self.assertTrue(
-            (result.returncode == 0) or asset_failure,
-            "the gate rejected the site:\n" + out)
-        if asset_failure:
-            self.assertEqual(
-                len([line for line in out.splitlines()
-                     if line.startswith("FAIL  ") and "does not match its content" not in line]),
-                0,
-                "the only gate failure must be the CRLF asset hash:\n" + out)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
 
 if __name__ == "__main__":

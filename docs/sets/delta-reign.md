@@ -1,100 +1,81 @@
-# Delta Reign (ME06) — source ledger
+# Delta Reign (ME06) release ledger
 
-The set page at `/sets/delta-reign` is built from `data/sets/delta-reign.json`.
-This file records where every value in that data file came from, and which
-facts are still provisional.
+Pokémon TCG: Mega Evolution—Delta Reign launches on November 6, 2026. The
+[collector page](https://bountycharts.com/sets/delta-reign) gets its editorial
+copy and listing data from [the set file](../../data/sets/delta-reign.json).
+That file records the source for each listing and the retrieval time for each feed.
 
-Set: **Pokémon TCG: Mega Evolution—Delta Reign** (set code `ME06`)
-Release: **November 6, 2026**
+## Release facts
 
-## Sources
-
-| What | Source | Retrieved (UTC) |
-|---|---|---|
-| Card list, numbering, rarity, type, HP | TCGplayer catalogue via TCGCSV, group `24831` — <https://tcgcsv.com/tcgplayer/3/24831/products> | 2026-11-04T17:54:00Z |
-| Market and low prices | TCGplayer market price via TCGCSV, group `24831` — <https://tcgcsv.com/tcgplayer/3/24831/prices> | 2026-11-04T17:54:00Z |
-| Release date, official card count | The Pokémon Company International, *Pokémon TCG: Mega Evolution—Delta Reign product showcase* — <https://www.pokemon.com/us/news/pokemon-tcg-mega-evolution-delta-reign-product-showcase> | 2026-11-04T16:45:00Z |
-| Expansion page | Pokémon TCG official expansion page — <https://tcg.pokemon.com/en-us/expansions/delta-reign/> | 2026-11-04T16:45:00Z |
-
-## Set size: 103 or 135 or 141?
-
-Three numbers are in play and they are not the same quantity.
-
-- **"over 135 cards"** — the official figure. The Pokémon Company International
-  states the expansion "boasts more than 135 cards" and lists "Number of Cards:
-  Over 135" in the product showcase. The final English count has not been
-  published.
-- **141 numbered printings** — what TCGCSV lists for group `24831` at the
-  retrieval time. Numbering runs 1–141 with no gaps.
-- **103** — the denominator TCGplayer prints on every card in the set
-  (`001/103`, `138/103`, `141/103`). It is the main-set base number, not the
-  count of numbered printings.
-
-The same pattern appears on a set that has already released: *Destined Rivals*
-(group `24269`) lists 244 numbered printings against a `/182` base. So the
-denominator is the base set and the extra numbers are additional printings.
-
-**What the page says:** "Official size: over 135 cards" and "Cards listed:
-141". Both are sourced, and the gap between them is TPCi not having published
-a final count.
-
-## Rarity counts cross-check
-
-TCGCSV's rarity split for the 141 listed printings:
-
-| Rarity | Count |
+| Fact | Evidence |
 |---|---|
-| Common | 52 |
-| Uncommon | 31 |
-| Rare | 10 |
-| Double Rare | 10 |
-| Ultra Rare | 17 |
-| Illustration Rare | 14 |
-| Special Illustration Rare | 6 |
-| Mega Hyper Rare | 1 |
+| November 6 tabletop release | [Pokémon's November product calendar](https://www.pokemon.com/us/news/check-out-every-pokemon-tcg-product-release-in-november-2026) |
+| Mega Rayquaza ex returns. Six Stadium cards form three pairs. Each pair makes one panorama. | [Pokémon's expansion announcement](https://press.pokemon.com/en/MEDIA-ALERT-New-Pokemon-Trading-Card-Game-Mega-EvolutionDelta-Reign-Ex) |
+| Legendary Pyroduct is numbered 094/103 and 095/103 | [Official card preview](https://www.pokemon.com/us/features/sneak-a-peek-at-cards-from-the-mega-evolution-delta-reign-expansion) and [TCGCSV product catalogue](https://tcgcsv.com/tcgplayer/3/24831/products) |
+| Pokémon describes the expansion as over 135 cards. Its October preview also says over 140. | [Product showcase](https://www.pokemon.com/us/news/pokemon-tcg-mega-evolution-delta-reign-product-showcase) and [card preview](https://www.pokemon.com/us/features/sneak-a-peek-at-cards-from-the-mega-evolution-delta-reign-expansion) |
 
-TPCi's announcement states the rare slots as "six Special Illustration Rares,
-14 Illustration Rares and 17 Ultra Rares". TCGCSV agrees on all three, and
-6 + 14 + 17 = 37, consistent with TPCi's "more than 35 cards that use special
-illustration treatments".
+Group 24831 contained 141 consecutively numbered listings at release verification.
+The /103 printed on the cards identifies the main set. Numbers 104 through
+141 distinguish 38 additional numbered cards. TCGCSV lists 14 illustration
+rares, 17 ultra rares and six special illustration rares, consistent with the
+publisher's announcement. Listings for sealed products are counted separately.
 
-## Prices
+## Release price snapshot
 
-Prices come from the same TCGCSV group file SetSealed's nightly ingest reads,
-so the two sites cannot disagree about a product they both publish.
+| Measure | Value |
+|---|---|
+| TCGCSV source update | 2026-11-05T20:05:46Z |
+| Catalogue and prices retrieved and cross-checked | 2026-11-06T06:50:10Z |
+| Catalogue and variant quotes | 162 products and 242 price rows |
+| Numbered cards with a market price | 134 of 141 |
+| Sealed products with a market price | 15 of 21 |
+| Missing card market values | Seven, compared with 20 in the November 4 snapshot |
 
-The rule that decides which price row a product shows differs by product type,
-deliberately:
+Six of the seven unpriced cards have a low asking price. The other, Talonflame ex
+124/103, lacks both values. Mega Rayquaza ex 138/103 has a $397.94 market price.
+For 141/103 the feed has a $400.00 low and no market price. The ten highest
+quoted singles account for 75% of the sum of one copy of each quoted single.
+Ninety of the 134 quoted singles have a market price below $1.
 
-- **Sealed product** — one row per product, preferring the `Normal` printing.
-  Identical to SetSealed's `onePricePerProduct`. A sealed SKU has one
-  printing, so the choice is unambiguous and both sites land on the same
-  number.
-- **Card** — one product, one price row per printing (`Normal`,
-  `Reverse Holofoil`, `Holofoil`, …). The page quotes the printing that has a
-  market price, preferring `Normal` when several do, and says which printing
-  it is quoting in the *Printing* column. On a modern set the base printing
-  frequently has no market price yet while the holo printing does; reporting
-  a blank for a card that is trading would be wrong.
+These are release-verification figures. Subsequent snapshots update the
+[set file](../../data/sets/delta-reign.json) and the rendered page. The page
+shows TCGCSV's [feed update time](https://tcgcsv.com/last-updated.txt) separately
+from the time the files were retrieved. All prices are USD.
 
-Prices are converted to integer cents with `floor(value * 100 + 0.5)`, which
-is what JavaScript's `Math.round(value * 100)` does. Python's `round()` is
-banker's rounding and disagrees on exact halves, so `round()` is not used.
+## How the prices are selected
 
-## Still provisional
+Join [products](https://tcgcsv.com/tcgplayer/3/24831/products) and
+[prices](https://tcgcsv.com/tcgplayer/3/24831/prices) on product ID. For a
+numbered card, choose a printing with a reported market price, preferring
+Normal when available. With no market price, use the Normal row if present,
+otherwise the first supplied printing. Keep the low and market from that same
+row. For a sealed SKU, prefer Normal, matching SetSealed. Both pipelines use
+the equivalent of JavaScript's Math.round(value * 100) for positive USD values.
 
-- TCGplayer marks every product in this set as a presale: *"card details,
-  including rarity and card name, may change up until release date."* The card
-  list, the rarity split and the set size can all change before November 6.
-- 20 of the 141 printings have no market price yet — almost all of them the
-  higher-numbered art variants. Those rows show a dash for market and, where
-  TCGCSV has one, a low price.
-- The official English card count has not been published.
+TCGplayer derives [market price](https://help.tcgplayer.com/hc/en-us/articles/213588017-TCGplayer-Market-Price)
+from recent completed sales. The low is a listing price. A missing field is
+displayed explicitly. Only observed market prices enter the verdict.
 
-## Where the page lives
+## Refresh and publication
 
-- Page: <https://bountycharts.com/sets/delta-reign>
-- Data: `data/sets/delta-reign.json`
-- Template: `templates/set.html`
-- Build: `python3 scripts/build_sets.py`
-- Refresh: `python3 scripts/fetch_tcgcsv.py`
+Run `python3 scripts/fetch_tcgcsv.py --set delta-reign`, then
+`python3 scripts/build_sets.py`, `python3 scripts/validate_site.py` and
+`python3 -m unittest discover -s tests`. The release-day refresh is scheduled
+for 14:00 UTC on November 6, 2026 (06:00 Pacific). The nightly refresh runs at
+21:30 UTC. With no pending draft, ordinary nightly runs skip an unchanged
+provider timestamp. The release run, explicit manual runs and updates to an
+open draft fetch the files again and record the actual retrieval time.
+
+The job validates the tree and stages changed files on `chore/set-prices`
+(or a slug-specific review branch for a scoped dispatch). An open, reserved
+draft on the scheduled branch receives the validated commit directly. An
+optimistic ref check protects concurrent edits. When starting a new draft,
+GitHub Actions attempts to open it. Where repository policy restricts this, the job
+verifies the remote head, tree and parent and logs `DRAFT_REQUIRED`. A release
+reviewer with PR access can open the draft from those exact SHAs. `DRAFT_OPEN`
+means the job verified an existing draft at that head. After a price draft is
+merged or closed, use a manual run with a blank set input and open the next
+reserved draft from its verified receipt. Ready PRs are excluded from the
+refresh. Publishing requires a reviewed merge into main, the Cloudflare
+production branch. The deploy workflow then checks the live page, robots and
+sitemap against the reviewed result.

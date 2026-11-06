@@ -22,9 +22,9 @@
 {
   "@context": "https://schema.org",
   "@type": "CollectionPage",
-  "name": "{{ set.name }} — card list and prices",
-  "url": "{{ canonical_url }}",
-  "description": "{{ seo_description }}",
+  "name": {{json page_title}},
+  "url": {{json canonical_url}},
+  "description": {{json seo_description}},
   "inLanguage": "en",
   "isPartOf": {
     "@type": "WebSite",
@@ -33,12 +33,12 @@
   },
   "about": {
     "@type": "Product",
-    "name": "{{ set.name }}",
+    "name": {{json set.name}},
     "category": "Trading card game expansion",
-    "releaseDate": "{{ set.release_date }}",
-    "numberOfItems": {{ set_size }},
+    "releaseDate": {{json set.release_date}},
     "brand": { "@type": "Brand", "name": "Pokémon" }
-  }
+  },
+  "mainEntity": { "@type": "ItemList", "numberOfItems": {{json set_size}} }
 }
 </script>
 <style>
@@ -273,13 +273,14 @@
   <div class="hero">
     <h1>{{ set.name }}</h1>
     <p class="lede">{{ seo_description }}</p>
+    {{#if set.collector_note}}<p>{{ set.collector_note }}</p>{{/if}}
   </div>
 
   <section>
     <h2>Set</h2>
     <dl class="facts">
       <div>
-        <dt>Set code</dt>
+        <dt>TCGplayer set code</dt>
         <dd>{{ set.set_code }}</dd>
       </div>
       <div>
@@ -299,7 +300,7 @@
         <dd class="small">{{ price_source_label }}</dd>
       </div>
       <div>
-        <dt>Prices as of</dt>
+        <dt>TCGCSV snapshot</dt>
         <dd class="small">{{ prices_as_of_display }}</dd>
       </div>
     </dl>
@@ -314,6 +315,18 @@
     <p class="banner">{{ prices_pending_note }}</p>
   </section>
   {{/if}}
+
+  <section>
+    <h2>Price verdict</h2>
+    <p>TCGplayer reports a market price for {{ cards_priced }} of {{ cards_listed }} numbered cards in this snapshot. Market reflects recent sales of the printing shown. Low is the lowest listed asking price. Each field is labeled separately when its value is unavailable.</p>
+{{#if verdict_ready}}
+    <p class="verdict">{{ verdict_lead }} The ten highest market prices account for {{ verdict_top10_share }}% of the total for one copy of each priced single, led by {{ verdict_top_name }} {{ verdict_top_number }} ({{ verdict_top_rarity }}) at {{ verdict_top_price }}. Of the {{ verdict_priced_count }} quoted singles, {{ verdict_under_dollar_phrase }}.{{ verdict_listing_only }}</p>
+    <p>When comparing two copies, match the collector number and finish first. For sealed products, check whether the listing covers one box or a case before comparing prices.</p>
+{{/if}}
+{{#unless verdict_ready}}
+    <p class="verdict">Coverage is still thin. Once ten singles have reported market prices, this section compares the highest-priced cards with the rest of the priced list.</p>
+{{/unless}}
+  </section>
 
   <section>
     <h2>Card list</h2>
@@ -335,14 +348,14 @@
       <tbody>
         {{#each cards}}
         <tr>
-          <td class="no">{{ number }}</td>
+          <td class="no">{{ print_number }}</td>
           <td><a href="{{ tcgplayer_url }}" rel="nofollow noopener">{{ name }}</a></td>
           <td class="rarity">{{ rarity }}</td>
           <td>{{ card_type }}</td>
           <td class="num">{{ hp }}</td>
-          <td class="rarity">{{ price_subtype }}</td>
-          <td class="price">{{ market_display }}</td>
-          <td class="price">{{ low_display }}</td>
+          <td class="rarity">{{ printing_display }}</td>
+          <td class="{{ market_class }}">{{ market_display }}</td>
+          <td class="{{ low_class }}">{{ low_display }}</td>
         </tr>
         {{/each}}
       </tbody>
@@ -369,8 +382,8 @@
         <tr>
           <td><a href="{{ tcgplayer_url }}" rel="nofollow noopener">{{ name }}</a></td>
           <td class="rarity">{{ product_type }}</td>
-          <td class="price">{{ market_display }}</td>
-          <td class="price">{{ low_display }}</td>
+          <td class="{{ market_class }}">{{ market_display }}</td>
+          <td class="{{ low_class }}">{{ low_display }}</td>
         </tr>
         {{/each}}
       </tbody>
@@ -380,23 +393,11 @@
   {{/if}}
 
   <section>
-    <h2>Price verdict</h2>
-    {{#if verdict_ready}}
-    <p class="verdict">{{ verdict_lead }} The ten most expensive singles account for {{ verdict_top10_share }}% of the combined market value of all {{ verdict_priced_count }} singles that have a market price, led by {{ verdict_top_name }} ({{ verdict_top_rarity }}) at {{ verdict_top_price }}; {{ verdict_under_dollar_phrase }}.{{ verdict_listing_only }}</p>
-    <p class="verdict">If you want one specific card, buying the single is the reliable route; opening sealed product is a bet on pulling one of the few cards that carry the value. Prices in a set’s first weeks move quickly as supply arrives, so check the as-of date above before you buy.</p>
-    {{/if}}
-    {{#unless verdict_ready}}
-    <p class="verdict">The verdict needs market prices, and too few cards in this set have one yet. It fills in with the first price refresh that has them.</p>
-    {{/unless}}
-  </section>
-
-  <section>
     <h2>Sources</h2>
     <ul class="sources">
-      <li>Card list, numbering and rarity — TCGplayer catalogue via TCGCSV, set group {{ tcgcsv_group_id }} ({{ set.name }}).</li>
-      <li>Prices — TCGplayer market and low prices via TCGCSV, set group {{ tcgcsv_group_id }}.</li>
-      <li>Release date — The Pokémon Company International, Pokémon TCG expansion page.</li>
-      <li class="meta">Retrieved {{ retrieved_at_utc }} UTC.</li>
+{{#each sources}}
+      <li><a href="{{ url }}">{{ name }}</a></li>
+{{/each}}
     </ul>
   </section>
 
@@ -405,7 +406,7 @@
   <footer>
     <p>Pokémon and all related names are trademarks of Nintendo, Creatures Inc., GAME FREAK inc. and The Pokémon Company. BountyCharts is an independent price-research site and is not affiliated with, sponsored by, or endorsed by them.</p>
     <p>BountyCharts is an independent project. It is not affiliated with, endorsed by, or sponsored by Riot Games, The Pokémon Company, Bandai Namco, Wizards of the Coast, or any card game publisher.</p>
-    <p class="updated">Prices as of {{ prices_as_of_display }} · data retrieved {{ retrieved_at_utc }} UTC</p>
+    <p class="updated">TCGCSV snapshot {{ prices_as_of_display }} · Feed retrieved <time datetime="{{ retrieved_at_utc }}">{{ retrieved_at_utc }}</time></p>
   </footer>
 
 </div>

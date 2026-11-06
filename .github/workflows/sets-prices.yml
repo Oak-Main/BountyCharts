@@ -18,8 +18,7 @@ on:
     #
     # US daylight time ended on 2026-11-01, so Los Angeles is on PST
     # (UTC-8) on release day, not PDT (UTC-7): 06:00 local is 14:00 UTC.
-    # Using 13:00 UTC would run the job an hour early, before TCGCSV's
-    # nightly refresh lands.
+    # Cron has no year field. The schedule job limits this extra run to 2026.
     - cron: "0 14 6 11 *"
 
     # Nightly, 21:30 UTC. The same slot SetSealed's TCGCSV ingest runs in
@@ -39,16 +38,57 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  refresh:
+  schedule:
     runs-on: ubuntu-latest
+    permissions: {}
+    outputs:
+      due: ${{ steps.check.outputs.due }}
+    steps:
+      - id: check
+        env:
+          TRIGGER_CRON: ${{ github.event.schedule }}
+        run: |
+          if [[ "$TRIGGER_CRON" == '0 14 6 11 *' && "$(date -u +%F)" != 2026-11-06 ]]; then
+            echo "due=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "due=true" >> "$GITHUB_OUTPUT"
+          fi
+  refresh:
+    needs: schedule
+    if: needs.schedule.outputs.due == 'true' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    env:
+      REVIEW_BRANCH: ${{ inputs.set && format('chore/set-prices-{0}', inputs.set) || 'chore/set-prices' }}
     permissions:
       contents: write
       pull-requests: write
     steps:
       - uses: actions/checkout@v4
 
+      - name: Find the reserved draft
+        id: review
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          pr=$(gh pr list --head "$REVIEW_BRANCH" --base main --state open --json number,isDraft,headRefOid --jq '.[0] // empty')
+          if [[ -n "$pr" ]]; then
+            jq -e '.isDraft' <<< "$pr" > /dev/null || { echo "::error::Price PR is ready for review"; exit 1; }
+            echo "number=$(jq -r .number <<< "$pr")" >> "$GITHUB_OUTPUT"
+            echo "head=$(jq -r .headRefOid <<< "$pr")" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Fetch TCGCSV prices
-        run: python3 scripts/fetch_tcgcsv.py
+        env:
+          SET_SLUG: ${{ inputs.set }}
+          EVENT_NAME: ${{ github.event_name }}
+          TRIGGER_CRON: ${{ github.event.schedule }}
+          DRAFT_NUMBER: ${{ steps.review.outputs.number }}
+        run: |
+          args=(--set "$SET_SLUG")
+          if [[ "$EVENT_NAME" == workflow_dispatch || "$TRIGGER_CRON" == '0 14 6 11 *' || -n "$DRAFT_NUMBER" ]]; then
+            args+=(--rebuild)
+          fi
+          python3 scripts/fetch_tcgcsv.py "${args[@]}"
 
       - name: Render the set pages
         run: python3 scripts/build_sets.py
@@ -59,12 +99,62 @@ jobs:
       - name: Test the gate
         run: python3 -m unittest discover -s tests -v
 
-      # A draft PR, never a merge and never a deploy. If the refresh found
-      # no change, this action closes out without opening anything.
-      - name: Open a draft pull request
+      - name: Record the validated tree and protect reviews in progress
+        id: candidate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ steps.review.outputs.number }}
+        run: |
+          git add -- data/sets site/sets site/sitemap.xml
+          tree=$(git write-tree)
+          echo "tree=$tree" >> "$GITHUB_OUTPUT"
+          if git diff --cached --quiet; then
+            if [[ -n "$PR_NUMBER" ]]; then
+              git fetch --no-tags --depth=1 origin "refs/heads/$REVIEW_BRANCH"
+              test "$(git rev-parse 'FETCH_HEAD^{tree}')" = "$tree" || { echo "::error::Existing draft diverges from the verified unchanged snapshot."; exit 1; }
+            fi
+            echo "No change from main. No price update to review." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          ready=$(gh pr list --head "$REVIEW_BRANCH" --base main --state open --json isDraft --jq 'any(.[]; .isDraft == false)')
+          if [[ "$ready" == true ]]; then
+            echo "::error::The previous price update is ready for review. Its branch was preserved."
+            exit 1
+          fi
+          git reset --quiet HEAD -- data/sets site/sets site/sitemap.xml
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Update an existing draft with the validated tree
+        if: steps.candidate.outputs.changed == 'true' && steps.review.outputs.number != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ steps.review.outputs.number }}
+          PREVIOUS_HEAD: ${{ steps.review.outputs.head }}
+          TREE: ${{ steps.candidate.outputs.tree }}
+        run: |
+          pr=$(gh pr view "$PR_NUMBER" --json state,isDraft,headRefOid)
+          jq -e --arg sha "$PREVIOUS_HEAD" '.state == "OPEN" and .isDraft and .headRefOid == $sha' <<< "$pr" > /dev/null
+          git fetch --no-tags --depth=1 origin "refs/heads/$REVIEW_BRANCH"
+          test "$(git rev-parse FETCH_HEAD)" = "$PREVIOUS_HEAD"
+          test "$(git show --no-patch --format=%ce FETCH_HEAD)" = '41898282+github-actions[bot]@users.noreply.github.com'
+          paths=$(gh pr diff "$PR_NUMBER" --name-only)
+          if grep -Ev '^(data/sets/[^/]+\.json|site/sets/[^/]+\.html|site/sitemap\.xml)$' <<< "$paths" | grep -q .; then
+            echo "::error::Reserved draft contains changes outside the price snapshot."
+            exit 1
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          head=$(git commit-tree "$TREE" -p "$GITHUB_SHA" -m 'chore(sets): refresh TCGCSV prices')
+          ref="refs/heads/$REVIEW_BRANCH"
+          git push --force-with-lease="$ref:$PREVIOUS_HEAD" origin "$head:$ref"
+
+      - name: Open a new draft pull request
+        if: steps.candidate.outputs.changed == 'true' && steps.review.outputs.number == ''
+        continue-on-error: true
         uses: peter-evans/create-pull-request@v7
         with:
-          branch: chore/set-prices
+          base: main
+          branch: ${{ env.REVIEW_BRANCH }}
           delete-branch: false
           commit-message: "chore(sets): refresh TCGCSV prices"
           title: "chore(sets): refresh TCGCSV prices"
@@ -72,10 +162,8 @@ jobs:
             Automated price refresh for the set pages.
 
             Prices come from TCGCSV, the same source SetSealed's nightly
-            ingest reads, so the two sites agree on any product they both
-            publish. The data file carries the source URL and the UTC
-            retrieval timestamp for every value; the page shows the same
-            timestamp as its as-of stamp.
+            ingest reads. The data records the source feed update and the
+            time BountyCharts retrieved the snapshot separately.
 
             This is a draft. Merging it is the owner's decision.
           draft: true
@@ -83,4 +171,24 @@ jobs:
             data/sets
             site/sets
             site/sitemap.xml
-            site/_redirects
+
+      # Oak-Main restricts PR creation by GITHUB_TOKEN. The action can still
+      # push a review branch. Hand off only the exact validated candidate.
+      - name: Verify the review branch and record draft status
+        if: steps.candidate.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EXPECTED_TREE: ${{ steps.candidate.outputs.tree }}
+        run: |
+          git fetch --no-tags --depth=2 origin "refs/heads/$REVIEW_BRANCH"
+          head=$(git rev-parse FETCH_HEAD)
+          test "$(git rev-parse 'FETCH_HEAD^{tree}')" = "$EXPECTED_TREE"
+          test "$(git rev-parse 'FETCH_HEAD^')" = "$GITHUB_SHA"
+          pr=$(gh pr list --head "$REVIEW_BRANCH" --base main --state open --json isDraft,headRefOid,url --jq '.[0] // empty')
+          if [[ -n "$pr" ]]; then
+            jq -e --arg sha "$head" '.isDraft and .headRefOid == $sha' <<< "$pr" > /dev/null
+            status="DRAFT_OPEN"
+          else
+            status="DRAFT_REQUIRED"
+          fi
+          echo "$status branch=$REVIEW_BRANCH base=$GITHUB_SHA head=$head tree=$EXPECTED_TREE" | tee -a "$GITHUB_STEP_SUMMARY"
