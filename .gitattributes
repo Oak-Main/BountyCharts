@@ -1,0 +1,2 @@
+# Fingerprinted filenames refer to the exact bytes served by Pages.
+site/assets/** -text

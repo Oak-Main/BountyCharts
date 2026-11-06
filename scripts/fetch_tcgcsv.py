@@ -5,9 +5,9 @@ Refresh the set data files in data/sets/ from TCGCSV.
 Run:
     python3 scripts/fetch_tcgcsv.py            # refresh prices (and any cards
                                               # the feed has added since)
-    python3 scripts/fetch_tcgcsv.py --rebuild  # same, but also resets the
-                                              # curated metadata back to the
-                                              # values in this file
+    python3 scripts/fetch_tcgcsv.py --set delta-reign
+    python3 scripts/fetch_tcgcsv.py --rebuild  # renew the retrieval receipt
+                                              # even for an unchanged snapshot
 
 Standard library only, matching the rest of the repo.
 
@@ -49,6 +49,7 @@ import math
 import pathlib
 import re
 import sys
+import tempfile
 import time
 import urllib.error
 import urllib.request
@@ -58,38 +59,44 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 DATA = ROOT / "data" / "sets"
 
 TCGCSV_BASE_URL = "https://tcgcsv.com/tcgplayer/3"
+TCGCSV_UPDATE_URL = "https://tcgcsv.com/last-updated.txt"
 TCGCSV_USER_AGENT = "BountyCharts/0.1.0 (+https://bountycharts.com)"
 TCGCSV_REQUEST_GAP_MS = 100
 TIMEOUT_SECONDS = 30
-
-# Curated metadata that lives in this file rather than in the feed. A rebuild
-# restores these; a refresh leaves them alone.
-CURATED_KEYS = (
-    "set",
-    "set_size_label",
-    "set_size_source",
-    "price_source",
-    "sources",
-    "official_size_label",
-)
-
 
 # ---------------------------------------------------------------------------
 # TCGCSV access
 # ---------------------------------------------------------------------------
 
-def fetch_json(url: str) -> dict:
+def fetch_text(url: str) -> str:
     request = urllib.request.Request(
         url,
         headers={
             "User-Agent": TCGCSV_USER_AGENT,
-            "Accept": "application/json",
+            "Accept": "application/json, text/plain",
         },
     )
     with urllib.request.urlopen(request, timeout=TIMEOUT_SECONDS) as response:
         if response.status != 200:
             raise RuntimeError(f"{url} -> HTTP {response.status}")
-        return json.loads(response.read().decode("utf-8"))
+        return response.read().decode("utf-8")
+
+
+def feed_time() -> str:
+    stamp = datetime.fromisoformat(fetch_text(TCGCSV_UPDATE_URL).strip())
+    if stamp.tzinfo is None:
+        raise ValueError("TCGCSV update timestamp has no time zone")
+    return stamp.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def fetch_rows(url: str) -> list[dict]:
+    payload = json.loads(fetch_text(url))
+    rows = payload.get("results") if isinstance(payload, dict) else None
+    if (not isinstance(rows, list) or payload.get("success") is not True
+            or payload.get("errors") or payload.get("totalItems", len(rows)) != len(rows)
+            or any(not isinstance(row, dict) or type(row.get("productId")) is not int for row in rows)):
+        raise ValueError(f"invalid or incomplete TCGCSV response for {url}")
+    return rows
 
 
 def usd_to_cents(value) -> int | None:
@@ -161,7 +168,7 @@ def pick_card_price(rows: list[dict]) -> tuple[int | None, int | None, str | Non
     if not rows:
         return None, None, None
     normal = next((r for r in rows if r.get("subTypeName") == "Normal"), None)
-    priced = [r for r in rows if r.get("marketPrice") is not None]
+    priced = [r for r in rows if usd_to_cents(r.get("marketPrice")) is not None]
     if priced:
         chosen = next((r for r in priced if r.get("subTypeName") == "Normal"), priced[0])
     else:
@@ -187,6 +194,8 @@ def extended(product: dict, field: str) -> str | None:
 
 def classify_sealed(name: str) -> str:
     lowered = name.lower()
+    if re.search(r"\bcase\b", lowered):
+        return "case"
     if "elite trainer box" in lowered:
         return "etb" if "pokemon center" not in lowered else "pc_etb"
     if "booster box" in lowered:
@@ -201,8 +210,6 @@ def classify_sealed(name: str) -> str:
         return "blister"
     if "checklane" in lowered:
         return "checklane"
-    if "case" in lowered:
-        return "case"
     return "sealed_product"
 
 
@@ -255,10 +262,7 @@ def parse_catalogue(products: list[dict], prices: dict[int, list[dict]]) -> tupl
             })
         else:
             name = product.get("name") or ""
-            chosen = next((r for r in product_rows
-                           if r.get("subTypeName") == "Normal"), None)
-            if chosen is None and product_rows:
-                chosen = product_rows[0]
+            chosen = one_price_per_product(product_rows).get(product_id)
             sealed.append({
                 "name": name,
                 "product_type": classify_sealed(name),
@@ -285,64 +289,67 @@ def refresh_set(path: pathlib.Path, rebuild: bool) -> int:
         return 1
 
     base = f"{TCGCSV_BASE_URL}/{group_id}"
+    catalogue_url, prices_url = f"{base}/products", f"{base}/prices"
     try:
-        catalogue = fetch_json(f"{base}/products")
+        as_of = feed_time()
+        time.sleep(TCGCSV_REQUEST_GAP_MS / 1000)
+        products = fetch_rows(catalogue_url)
+        time.sleep(TCGCSV_REQUEST_GAP_MS / 1000)
+        quotes = fetch_rows(prices_url)
+        time.sleep(TCGCSV_REQUEST_GAP_MS / 1000)
+        if feed_time() != as_of:
+            raise ValueError("TCGCSV updated during retrieval; retry the refresh")
+        if any(p.get("groupId") != group_id or p.get("categoryId") != 3 for p in products):
+            raise ValueError("catalogue contains a product outside the requested group")
+        cards, sealed = parse_catalogue(products, rows_by_product(quotes))
+        if not cards:
+            raise ValueError("catalogue has no numbered cards")
+        known_ids = {p["productId"] for p in products}
+        if len(known_ids) != len(products):
+            raise ValueError("duplicate product IDs in catalogue")
+        had_quotes = any(row.get(k) is not None for row in [*data.get("cards", []), *data.get("sealed", [])]
+                         for k in ("market_cents", "low_cents"))
+        if had_quotes and not any(row[k] is not None for row in [*cards, *sealed]
+                                  for k in ("market_cents", "low_cents")):
+            raise ValueError("no usable prices for a previously quoted set")
     except urllib.error.HTTPError as exc:
-        if exc.code == 404:
-            # The set is not in the feed yet. Leave the card list alone and
-            # report it; the page falls back to the "prices from release day"
-            # state rather than showing an empty price for every card.
-            print(f"FAIL  {path.name}: TCGCSV group {group_id} not published yet "
-                  f"(HTTP 404) — keeping the existing card list")
-            return 2
-        print(f"FAIL  {path.name}: {base}/products -> HTTP {exc.code}")
+        release = (data.get("set") or {}).get("release_date") or ""
+        if (exc.code == 404 and exc.url in (catalogue_url, prices_url)
+                and release > datetime.now(timezone.utc).date().isoformat()):
+            print(f"skip  {path.name}: group {group_id} pending before release")
+            return 0
+        print(f"FAIL  {path.name}: {exc.url} -> HTTP {exc.code}; snapshot preserved")
         return 1
-    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
-        print(f"FAIL  {path.name}: {base}/products -> {exc}")
+    except (OSError, ValueError, RuntimeError) as exc:
+        print(f"FAIL  {path.name}: {exc}; snapshot preserved")
         return 1
 
-    if not catalogue.get("success"):
-        print(f"FAIL  {path.name}: TCGCSV reported failure for group {group_id}")
-        return 1
-
-    time.sleep(TCGCSV_REQUEST_GAP_MS / 1000)
-    try:
-        price_payload = fetch_json(f"{base}/prices")
-    except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError,
-            json.JSONDecodeError) as exc:
-        print(f"FAIL  {path.name}: {base}/prices -> {exc}")
-        return 1
-
-    if not price_payload.get("success"):
-        print(f"FAIL  {path.name}: TCGCSV reported failure for prices in group {group_id}")
-        return 1
-
-    cards, sealed = parse_catalogue(
-        catalogue.get("results") or [],
-        rows_by_product(price_payload.get("results") or []),
-    )
+    if (not rebuild and data.get("prices_as_of_utc") == as_of
+            and data.get("cards") == cards and data.get("sealed") == sealed):
+        print(f"ok    {path.name}: unchanged TCGCSV snapshot {as_of}")
+        return 0
 
     retrieved_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    priced = sum(1 for card in cards if card["market_cents"] is not None)
+    priced = sum(card["market_cents"] is not None for card in cards)
+    data.update(cards=cards, sealed=sealed, retrieved_at_utc=retrieved_at, prices_as_of_utc=as_of)
+    source = data.setdefault("price_source", {})
+    source.setdefault("name", "TCGplayer market price via TCGCSV")
+    source.update(prices_url=prices_url, catalogue_url=catalogue_url, group_id=group_id,
+                  retrieved_at_utc=retrieved_at)
+    for entry in data.get("sources", []):
+        if entry.get("url") in (catalogue_url, prices_url):
+            entry["retrieved_at_utc"] = retrieved_at
 
-    curated = {key: data[key] for key in CURATED_KEYS if key in data}
-    data.update(curated)
-    data["cards"] = cards
-    data["sealed"] = sealed
-    data["retrieved_at_utc"] = retrieved_at
-    data["prices_as_of_utc"] = retrieved_at
-    data["price_source"] = {
-        "name": "TCGplayer market price via TCGCSV",
-        "prices_url": f"{base}/prices",
-        "catalogue_url": f"{base}/products",
-        "group_id": group_id,
-        "retrieved_at_utc": retrieved_at,
-    }
-    if rebuild:
-        data["set_size_label"] = data.get("set_size_label") or str(len(cards))
-
-    with open(path, "w", encoding="utf-8", newline="\n") as handle:
-        handle.write(json.dumps(data, ensure_ascii=False, indent=2) + "\n")
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", newline="\n", dir=path.parent,
+                                     delete=False) as handle:
+        temporary = pathlib.Path(handle.name)
+        try:
+            json.dump(data, handle, ensure_ascii=False, indent=2)
+            handle.write("\n")
+            handle.close()
+            temporary.replace(path)
+        finally:
+            temporary.unlink(missing_ok=True)
     print(f"ok    {path.name}: {len(cards)} card rows ({priced} priced), "
           f"{len(sealed)} sealed rows, retrieved {retrieved_at}")
     return 0
@@ -351,8 +358,8 @@ def refresh_set(path: pathlib.Path, rebuild: bool) -> int:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--rebuild", action="store_true",
-                        help="also reset the curated metadata to the values in "
-                             "the data file")
+                        help="renew the retrieval receipt even for an unchanged feed")
+    parser.add_argument("--set", default="", metavar="SLUG", help="refresh only this set slug")
     args = parser.parse_args()
 
     if not DATA.is_dir():
@@ -360,8 +367,11 @@ def main() -> int:
         return 1
 
     files = sorted(DATA.glob("*.json"))
+    if args.set:
+        files = [path for path in files
+                 if (json.loads(path.read_text(encoding="utf-8")).get("slug") or path.stem) == args.set]
     if not files:
-        print(f"FAIL  no data files in {DATA}")
+        print(f"FAIL  no matching set {args.set!r} in {DATA}")
         return 1
 
     failures = 0

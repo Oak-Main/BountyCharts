@@ -5,29 +5,31 @@
     "short_name": "Delta Reign",
     "set_code": "ME06",
     "game": "pokemon",
-    "release_date": "2026-11-06"
+    "release_date": "2026-11-06",
+    "description": "Delta Reign features Mega Rayquaza ex and three two-card Legendary Stadiums. Compare TCGplayer prices by collector number, printing, and sealed product.",
+    "collector_note": "For a two-pocket binder spread, look for Legendary Pyroduct 094/103 and 095/103. Side by side, the two halves make one volcanic scene. Mega Rayquaza ex also appears under several collector numbers. Use the number on your card to find its price."
   },
   "tcgcsv_group_id": 24831,
   "tcgcsv_group_name": "ME06: Delta Reign",
   "set_size_label": "over 135 cards",
-  "set_size_source": "The Pokémon Company International states the expansion \"boasts more than 135 cards\". TCGplayer lists the same set with a /103 base number and 141 numbered printings. The final English card count has not been published; see docs/sets/delta-reign.md.",
+  "set_size_source": "The Pokémon Company lists over 135 cards in its product showcase. The TCGCSV catalogue numbers its main set to 103 and lists additional numbered variants.",
   "price_source": {
     "name": "TCGplayer market price via TCGCSV",
     "prices_url": "https://tcgcsv.com/tcgplayer/3/24831/prices",
     "catalogue_url": "https://tcgcsv.com/tcgplayer/3/24831/products",
     "group_id": 24831,
-    "retrieved_at_utc": "2026-11-06T07:01:25Z"
+    "retrieved_at_utc": "2026-11-06T06:50:10Z"
   },
   "sources": [
     {
       "name": "Card list, numbering and rarity — TCGplayer catalogue via TCGCSV, set group 24831",
       "url": "https://tcgcsv.com/tcgplayer/3/24831/products",
-      "retrieved_at_utc": "2026-11-04T16:45:00Z"
+      "retrieved_at_utc": "2026-11-06T06:50:10Z"
     },
     {
       "name": "Prices — TCGplayer market and low prices via TCGCSV, set group 24831",
       "url": "https://tcgcsv.com/tcgplayer/3/24831/prices",
-      "retrieved_at_utc": "2026-11-04T16:45:00Z"
+      "retrieved_at_utc": "2026-11-06T06:50:10Z"
     },
     {
       "name": "Release date and official card count — The Pokémon Company International, Pokémon TCG: Mega Evolution—Delta Reign product showcase",
@@ -38,6 +40,26 @@
       "name": "Official expansion page — Pokémon TCG: Mega Evolution—Delta Reign (release date November 6, 2026)",
       "url": "https://tcg.pokemon.com/en-us/expansions/delta-reign/",
       "retrieved_at_utc": "2026-11-04T16:45:00Z"
+    },
+    {
+      "name": "November 2026 releases — The Pokémon Company",
+      "url": "https://www.pokemon.com/us/news/check-out-every-pokemon-tcg-product-release-in-november-2026",
+      "retrieved_at_utc": "2026-11-06T06:46:00Z"
+    },
+    {
+      "name": "Mega Rayquaza ex and paired Legendary Stadiums — The Pokémon Company",
+      "url": "https://press.pokemon.com/en/MEDIA-ALERT-New-Pokemon-Trading-Card-Game-Mega-EvolutionDelta-Reign-Ex",
+      "retrieved_at_utc": "2026-11-06T06:50:00Z"
+    },
+    {
+      "name": "Legendary Pyroduct card preview — The Pokémon Company",
+      "url": "https://www.pokemon.com/us/features/sneak-a-peek-at-cards-from-the-mega-evolution-delta-reign-expansion",
+      "retrieved_at_utc": "2026-11-06T06:46:00Z"
+    },
+    {
+      "name": "How TCGplayer calculates market price",
+      "url": "https://help.tcgplayer.com/hc/en-us/articles/213588017-TCGplayer-Market-Price",
+      "retrieved_at_utc": "2026-11-06T06:50:00Z"
     }
   ],
   "cards": [
@@ -2178,7 +2200,7 @@
     },
     {
       "name": "Delta Reign Booster Box Case",
-      "product_type": "booster_box",
+      "product_type": "case",
       "tcgcsv_product_id": 712096,
       "tcgplayer_url": "https://www.tcgplayer.com/product/712096/pokemon-me06-delta-reign-delta-reign-booster-box-case",
       "market_cents": 132777,
@@ -2196,7 +2218,7 @@
     },
     {
       "name": "Delta Reign Booster Bundle Case",
-      "product_type": "bundle",
+      "product_type": "case",
       "tcgcsv_product_id": 712098,
       "tcgplayer_url": "https://www.tcgplayer.com/product/712098/pokemon-me06-delta-reign-delta-reign-booster-bundle-case",
       "market_cents": 128750,
@@ -2241,7 +2263,7 @@
     },
     {
       "name": "Delta Reign Elite Trainer Box Case",
-      "product_type": "etb",
+      "product_type": "case",
       "tcgcsv_product_id": 712103,
       "tcgplayer_url": "https://www.tcgplayer.com/product/712103/pokemon-me06-delta-reign-delta-reign-elite-trainer-box-case",
       "market_cents": 103449,
@@ -2268,7 +2290,7 @@
     },
     {
       "name": "Delta Reign Pokemon Center Elite Trainer Box Case (Exclusive)",
-      "product_type": "pc_etb",
+      "product_type": "case",
       "tcgcsv_product_id": 712105,
       "tcgplayer_url": "https://www.tcgplayer.com/product/712105/pokemon-me06-delta-reign-delta-reign-pokemon-center-elite-trainer-box-case-exclusive",
       "market_cents": null,
@@ -2348,6 +2370,6 @@
       "price_subtype": "Normal"
     }
   ],
-  "retrieved_at_utc": "2026-11-06T07:01:25Z",
-  "prices_as_of_utc": "2026-11-06T07:01:25Z"
+  "retrieved_at_utc": "2026-11-06T06:50:10Z",
+  "prices_as_of_utc": "2026-11-05T20:05:46Z"
 }
