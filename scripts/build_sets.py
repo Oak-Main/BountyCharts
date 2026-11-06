@@ -10,13 +10,17 @@ Standard library only, matching the rest of the repo.
 Three things happen here, and only these three:
 
   1. Every data/sets/<slug>.json is rendered through templates/set.html into
-     site/sets/<slug>.html.
+     site/sets/<slug>.html. A page that still carries an unfilled
+     [[COPY: ...]] marker is rendered `noindex,follow`, so placeholder text
+     can never reach a search result; it becomes indexable again, with no
+     other change, the moment the last marker is replaced.
 
   2. site/sitemap.xml is rewritten so that a set appears in it only when its
-     data file has at least one card row. An empty data file still renders a
-     page (a set that exists but has no prices yet), but it is deliberately
-     kept out of the sitemap rather than advertised as an indexable page with
-     nothing on it.
+     data file has at least one card row AND its page has no unfilled
+     [[COPY: ...]] marker. An empty data file still renders a page (a set that
+     exists but has no prices yet), but it is deliberately kept out of the
+     sitemap rather than advertised as an indexable page with nothing on it.
+     The same applies to a page whose copy has not been written yet.
 
   3. site/_redirects gets one clean-URL rewrite per set, so /sets/<slug>
      resolves whether or not Cloudflare Pages' automatic HTML handling is on.
@@ -45,6 +49,13 @@ SETS_OUT = SITE / "sets"
 SITE_URL = "https://bountycharts.com"
 
 TEMPLATE = TEMPLATES / "set.html"
+
+# Copy that the site's author has not written yet is left in the template as a
+# [[COPY: name]] marker (see tests/test_build_sets.py::CopyIsLeftForTheAuthor).
+# A page that still contains one must not be indexed or advertised.
+COPY_MARKER_RE = re.compile(r"\[\[COPY:[^\]]*\]\]")
+ROBOTS_INDEXABLE = "index,follow,max-image-preview:large"
+ROBOTS_HELD = "noindex,follow"
 
 
 def configure(root: pathlib.Path) -> None:
@@ -215,6 +226,7 @@ def build_scope(data: dict) -> dict:
         "prices_as_of_display": prices_as_of.replace("T", " ").replace("Z", " UTC")
         if prices_as_of else "—",
         "retrieved_at_utc": retrieved,
+        "robots_content": ROBOTS_INDEXABLE,
         "prices_pending": state == "from-release-day",
         "prices_pending_note": (
             "Prices from release day. This expansion releases 2026-11-06; the "
@@ -259,10 +271,12 @@ def write_text(path: pathlib.Path, text: str) -> None:
 def update_sitemap(managed: dict[str, dict], today: str) -> str:
     """Rewrite site/sitemap.xml.
 
-    `managed` maps slug -> {"url": ..., "lastmod": ..., "empty": bool}.
-    A set whose data file is empty is removed from the sitemap; a set with
-    rows is present exactly once. Every other entry is left byte-for-byte
-    alone, so a hand-edited entry survives a rebuild.
+    `managed` maps slug -> {"url": ..., "lastmod": ..., "empty": bool,
+    "unresolved": bool}.
+    A set whose data file is empty, or whose page still carries an unfilled
+    [[COPY: ...]] marker, is removed from the sitemap; a set with rows and
+    finished copy is present exactly once. Every other entry is left
+    byte-for-byte alone, so a hand-edited entry survives a rebuild.
     """
     path = SITE / "sitemap.xml"
     text = path.read_text(encoding="utf-8")
@@ -274,7 +288,7 @@ def update_sitemap(managed: dict[str, dict], today: str) -> str:
             kept.append(block)
 
     for slug, info in sorted(managed.items()):
-        if info["empty"]:
+        if info["empty"] or info.get("unresolved"):
             continue
         kept.append(
             "  <url>\n"
@@ -359,7 +373,13 @@ def main(argv: list[str] | None = None) -> int:
         slug = data.get("slug") or path.stem
         scope = build_scope(data)
         out = SETS_OUT / f"{slug}.html"
-        write_text(out, render(template, scope))
+        page = render(template, scope)
+        unresolved = sorted(set(COPY_MARKER_RE.findall(page)))
+        if unresolved:
+            # Unwritten copy: keep the page reachable but out of search.
+            scope["robots_content"] = ROBOTS_HELD
+            page = render(template, scope)
+        write_text(out, page)
         rendered += 1
 
         cards = data.get("cards") or []
@@ -369,9 +389,13 @@ def main(argv: list[str] | None = None) -> int:
             "url": f"{SITE_URL}/sets/{slug}",
             "lastmod": lastmod,
             "empty": len(cards) == 0,
+            "unresolved": bool(unresolved),
         }
         print(f"ok    {slug}: {len(cards)} card rows, "
               f"{len(data.get('sealed') or [])} sealed rows -> {out.relative_to(ROOT)}")
+        if unresolved:
+            print(f"hold  {slug}: {len(unresolved)} unfilled copy marker(s) "
+                  f"({', '.join(unresolved)}) -> noindex, kept out of the sitemap")
 
     update_sitemap(managed, datetime.now(timezone.utc).date().isoformat())
     offenders = check_redirects_are_clean(list(managed))

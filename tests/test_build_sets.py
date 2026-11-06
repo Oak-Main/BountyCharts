@@ -73,6 +73,27 @@ def copy_repo(tmp: pathlib.Path) -> pathlib.Path:
     return root
 
 
+COPY_MARKERS = {
+    "[[COPY: delta-reign-description]]": "A written description for the test.",
+    "[[COPY: delta-reign-verdict]]": "A written verdict for the test.",
+}
+
+
+def fill_copy(root: pathlib.Path, only: tuple[str, ...] | None = None) -> None:
+    """Replace the author's [[COPY: ...]] markers in a temp copy of the template.
+
+    Stands in for the author having written the copy, so a test can prove what
+    a finished page does. `only` fills just the markers it names.
+    """
+    path = root / "templates" / "set.html"
+    text = read(path)
+    for marker, words in COPY_MARKERS.items():
+        if only is None or marker in only:
+            text = text.replace(marker, words)
+    with open(path, "w", encoding="utf-8", newline="\n") as handle:
+        handle.write(text)
+
+
 class SitemapIsGatedOnTheDataFile(unittest.TestCase):
     """A set is advertised only when its data file has rows in it."""
 
@@ -85,8 +106,9 @@ class SitemapIsGatedOnTheDataFile(unittest.TestCase):
         return root
 
     def test_a_set_with_rows_is_in_the_sitemap(self):
+        """With its copy written, a set that has rows is listed."""
         with tempfile.TemporaryDirectory() as tmp:
-            root = self._rebuild(pathlib.Path(tmp))
+            root = self._rebuild(pathlib.Path(tmp), fill_copy)
             sitemap = read(root / "site" / "sitemap.xml")
             self.assertIn("<loc>https://bountycharts.com/sets/delta-reign</loc>", sitemap)
 
@@ -124,7 +146,7 @@ class SitemapIsGatedOnTheDataFile(unittest.TestCase):
 
     def test_building_twice_does_not_duplicate_the_entry(self):
         with tempfile.TemporaryDirectory() as tmp:
-            root = self._rebuild(pathlib.Path(tmp))
+            root = self._rebuild(pathlib.Path(tmp), fill_copy)
             build_in(root)
             sitemap = read(root / "site" / "sitemap.xml")
             self.assertEqual(
@@ -145,8 +167,10 @@ class SitemapIsGatedOnTheDataFile(unittest.TestCase):
         """The gate checks this too, but the gate only looks at the shipped
         file -- this checks the builder produces it."""
         with tempfile.TemporaryDirectory() as tmp:
-            root = self._rebuild(pathlib.Path(tmp))
+            root = self._rebuild(pathlib.Path(tmp), fill_copy)
             sitemap = read(root / "site" / "sitemap.xml")
+            self.assertIn("/sets/delta-reign", sitemap,
+                          "the set's own entry must be among those checked")
             self.assertEqual(len(re.findall(r"<url>", sitemap)),
                              len(re.findall(r"<lastmod>", sitemap)))
             for value in re.findall(r"<lastmod>([^<]+)</lastmod>", sitemap):
@@ -206,6 +230,58 @@ class CopyIsLeftForTheAuthor(unittest.TestCase):
             "only the set description and the verdict are markers")
 
 
+ROBOTS_RE = re.compile(r'<meta name="robots" content="([^"]*)">')
+
+
+class UnfinishedCopyIsKeptOutOfSearch(unittest.TestCase):
+    """A page that still carries a [[COPY: ...]] marker must not reach a search
+    result: it is rendered noindex and left out of the sitemap until the last
+    marker is replaced, and then it becomes indexable and listed on its own."""
+
+    def _build(self, tmp: str, mutate=None) -> pathlib.Path:
+        root = copy_repo(pathlib.Path(tmp))
+        if mutate:
+            mutate(root)
+        result = build_in(root)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        return root
+
+    def _robots(self, root: pathlib.Path) -> str:
+        found = ROBOTS_RE.findall(read(root / "site" / "sets" / "delta-reign.html"))
+        self.assertEqual(len(found), 1, "exactly one robots meta on the page")
+        return found[0]
+
+    def test_the_committed_page_is_noindex_while_markers_remain(self):
+        self.assertEqual(ROBOTS_RE.findall(read(PAGE)), ["noindex,follow"])
+
+    def test_the_page_is_not_in_the_sitemap_while_markers_remain(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self._build(tmp)
+            self.assertNotIn("/sets/delta-reign", read(root / "site" / "sitemap.xml"))
+
+    def test_the_page_is_still_rendered_while_markers_remain(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self._build(tmp)
+            self.assertTrue((root / "site" / "sets" / "delta-reign.html").is_file())
+
+    def test_one_remaining_marker_keeps_the_page_held(self):
+        def fill_only_the_description(root: pathlib.Path):
+            fill_copy(root, ("[[COPY: delta-reign-description]]",))
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self._build(tmp, fill_only_the_description)
+            self.assertEqual(self._robots(root), "noindex,follow")
+            self.assertNotIn("/sets/delta-reign", read(root / "site" / "sitemap.xml"))
+
+    def test_a_finished_page_is_indexable_and_listed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self._build(tmp, fill_copy)
+            self.assertEqual(self._robots(root), "index,follow,max-image-preview:large")
+            self.assertIn("<loc>https://bountycharts.com/sets/delta-reign</loc>",
+                          read(root / "site" / "sitemap.xml"))
+            self.assertNotIn("[[COPY:", read(root / "site" / "sets" / "delta-reign.html"))
+
+
 class TheCommittedPageMatchesTheDataFile(unittest.TestCase):
     """Drift: the page must be what the builder produces."""
 
@@ -218,6 +294,16 @@ class TheCommittedPageMatchesTheDataFile(unittest.TestCase):
         self.assertEqual(
             normalise(read(PAGE)), rebuilt,
             "site/sets/delta-reign.html is stale -- run python3 scripts/build_sets.py")
+
+    def test_rebuilding_reproduces_the_committed_sitemap(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = copy_repo(pathlib.Path(tmp))
+            result = build_in(root)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            rebuilt = normalise(read(root / "site" / "sitemap.xml"))
+        self.assertEqual(
+            normalise(read(ROOT / "site" / "sitemap.xml")), rebuilt,
+            "site/sitemap.xml is stale -- run python3 scripts/build_sets.py")
 
 
 class TheDataFileIsAWellFormedCardList(unittest.TestCase):
