@@ -261,10 +261,10 @@ MONTHS = ["January", "February", "March", "April", "May", "June", "July",
 def long_date(iso: str) -> str:
     """2026-11-06 -> November 6, 2026; anything unparseable is returned as is."""
     try:
-        year, month, day = (int(x) for x in iso.split("-"))
-        return f"{MONTHS[month - 1]} {day}, {year}"
-    except (ValueError, IndexError, AttributeError):
+        parsed = datetime.strptime(iso, "%Y-%m-%d")
+    except (TypeError, ValueError):
         return iso or ""
+    return f"{MONTHS[parsed.month - 1]} {parsed.day}, {parsed.year}"
 
 
 def seo_description(set_meta: dict, n_cards: int, n_sealed: int) -> str:

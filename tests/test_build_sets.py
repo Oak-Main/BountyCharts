@@ -294,6 +294,11 @@ class TheVerdictComesFromThePrices(unittest.TestCase):
         self.assertIn("Chase (Mega Hyper Rare) has no market price yet", verdict["verdict_listing_only"])
         self.assertIn("$500.00", verdict["verdict_listing_only"])
 
+    def test_long_date_rejects_impossible_dates(self):
+        self.assertEqual(self.bs.long_date("2026-11-06"), "November 6, 2026")
+        for bad in ("2026-00-10", "2026-02-31", "soon", ""):
+            self.assertEqual(self.bs.long_date(bad), bad)
+
     def test_too_few_prices_gives_no_verdict(self):
         cards = [{"name": "A", "rarity": "Common", "market_cents": 50}]
         self.assertEqual(self.bs.price_verdict(cards), {"verdict_ready": False})
