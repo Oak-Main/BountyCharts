@@ -293,6 +293,9 @@ def refresh_set(path: pathlib.Path, rebuild: bool) -> int:
     catalogue_url, prices_url = f"{base}/products", f"{base}/prices"
     try:
         as_of = feed_time()
+        if not rebuild and data.get("prices_as_of_utc") == as_of and data.get("cards"):
+            print(f"ok    {path.name}: already holds TCGCSV snapshot {as_of}")
+            return 0
         time.sleep(TCGCSV_REQUEST_GAP_MS / 1000)
         products = fetch_rows(catalogue_url)
         time.sleep(TCGCSV_REQUEST_GAP_MS / 1000)
@@ -302,12 +305,14 @@ def refresh_set(path: pathlib.Path, rebuild: bool) -> int:
             raise ValueError("TCGCSV updated during retrieval; retry the refresh")
         if any(p.get("groupId") != group_id or p.get("categoryId") != 3 for p in products):
             raise ValueError("catalogue contains a product outside the requested group")
-        cards, sealed = parse_catalogue(products, rows_by_product(quotes))
-        if not cards:
-            raise ValueError("catalogue has no numbered cards")
         known_ids = {p["productId"] for p in products}
         if len(known_ids) != len(products):
             raise ValueError("duplicate product IDs in catalogue")
+        if any(row["productId"] not in known_ids for row in quotes):
+            raise ValueError("prices include a product outside the fetched catalogue")
+        cards, sealed = parse_catalogue(products, rows_by_product(quotes))
+        if not cards:
+            raise ValueError("catalogue has no numbered cards")
         had_quotes = any(row.get(k) is not None for row in [*data.get("cards", []), *data.get("sealed", [])]
                          for k in ("market_cents", "low_cents"))
         if had_quotes and not any(row[k] is not None for row in [*cards, *sealed]
@@ -324,11 +329,6 @@ def refresh_set(path: pathlib.Path, rebuild: bool) -> int:
     except (OSError, HTTPException, ValueError, RuntimeError) as exc:
         print(f"FAIL  {path.name}: {exc}; snapshot preserved")
         return 1
-
-    if (not rebuild and data.get("prices_as_of_utc") == as_of
-            and data.get("cards") == cards and data.get("sealed") == sealed):
-        print(f"ok    {path.name}: unchanged TCGCSV snapshot {as_of}")
-        return 0
 
     retrieved_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     priced = sum(card["market_cents"] is not None for card in cards)

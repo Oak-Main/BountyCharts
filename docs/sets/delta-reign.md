@@ -62,14 +62,20 @@ Run `python3 scripts/fetch_tcgcsv.py --set delta-reign`, then
 `python3 scripts/build_sets.py`, `python3 scripts/validate_site.py` and
 `python3 -m unittest discover -s tests`. The release-day refresh is scheduled
 for 14:00 UTC on November 6, 2026 (06:00 Pacific). The nightly refresh runs at
-21:30 UTC. Scheduled runs skip identical snapshots. Manual runs renew the
-source retrieval receipt, including when prices match.
+21:30 UTC. With no pending draft, ordinary nightly runs skip an unchanged
+provider timestamp. The release run, explicit manual runs and updates to an
+open draft fetch the files again and record the actual retrieval time.
 
 The job validates the tree and stages changed files on `chore/set-prices`
-(or a slug-specific review branch for a scoped dispatch). GitHub Actions
-attempts to open a draft. Where the repository policy restricts this, the job
+(or a slug-specific review branch for a scoped dispatch). An open, reserved
+draft on the scheduled branch receives the validated commit directly. An
+optimistic ref check protects concurrent edits. When starting a new draft,
+GitHub Actions attempts to open it. Where repository policy restricts this, the job
 verifies the remote head, tree and parent and logs `DRAFT_REQUIRED`. A release
 reviewer with PR access can open the draft from those exact SHAs. `DRAFT_OPEN`
-means the job verified an existing draft at that head. A branch marked ready
-for review is protected from automatic updates. Publishing requires a reviewed
-merge into main, the Cloudflare production branch.
+means the job verified an existing draft at that head. After a price draft is
+merged or closed, use a manual run with a blank set input and open the next
+reserved draft from its verified receipt. Ready PRs are excluded from the
+refresh. Publishing requires a reviewed merge into main, the Cloudflare
+production branch. The deploy workflow then checks the live page, robots and
+sitemap against the reviewed result.

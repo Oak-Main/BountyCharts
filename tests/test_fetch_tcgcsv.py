@@ -54,7 +54,9 @@ class RefreshTest(unittest.TestCase):
         self.assertEqual(data["price_source"]["name"], "Curated price label")
         self.assertEqual([s["retrieved_at_utc"] for s in data["sources"]],
                          [data["retrieved_at_utc"], data["retrieved_at_utc"], "original"])
-        self.assertEqual(self.run_refresh(), 0)
+        with patch.object(fetcher, "fetch_text", side_effect=self.payloads.__getitem__) as unchanged:
+            self.assertEqual(fetcher.refresh_set(self.path, rebuild=False), 0)
+            unchanged.assert_called_once_with(fetcher.TCGCSV_UPDATE_URL)
         self.assertEqual(self.path.read_bytes(), content)
 
     def test_failed_partial_and_mixed_snapshots_preserve_the_file(self):
@@ -62,6 +64,8 @@ class RefreshTest(unittest.TestCase):
         for url, result in [(self.products, '{"success":true,"results":[]}'),
                             (self.prices, '{"success":true,"results":[]}'),
                             (self.prices, '{"success":false,"results":[]}'),
+                            (self.prices, '{"success":true,"results":[{"productId":1,"lowPrice":1},'
+                                          '{"productId":999,"marketPrice":10}]}'),
                             (self.products, '{"success":true,"totalItems":2,"results":[]}'),
                             (self.prices, "{bad json")]:
             with self.subTest(url=url, result=result):
@@ -78,7 +82,9 @@ class RefreshTest(unittest.TestCase):
             if url == self.products:
                 raise HTTPError(url, 404, "Not found", {}, None)
             return self.payloads[url]
+        original = self.path.read_bytes()
         self.assertEqual(self.run_refresh(missing), 1)
+        self.assertEqual(self.path.read_bytes(), original)
         data = json.loads(self.path.read_bytes())
         data["set"]["release_date"] = "2999-01-01"
         self.path.write_text(json.dumps(data))

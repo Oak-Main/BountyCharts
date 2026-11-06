@@ -65,13 +65,29 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Find the reserved draft
+        id: review
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          pr=$(gh pr list --head "$REVIEW_BRANCH" --base main --state open --json number,isDraft,headRefOid --jq '.[0] // empty')
+          if [[ -n "$pr" ]]; then
+            jq -e '.isDraft' <<< "$pr" > /dev/null || { echo "::error::Price PR is ready for review"; exit 1; }
+            echo "number=$(jq -r .number <<< "$pr")" >> "$GITHUB_OUTPUT"
+            echo "head=$(jq -r .headRefOid <<< "$pr")" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Fetch TCGCSV prices
         env:
           SET_SLUG: ${{ inputs.set }}
           EVENT_NAME: ${{ github.event_name }}
+          TRIGGER_CRON: ${{ github.event.schedule }}
+          DRAFT_NUMBER: ${{ steps.review.outputs.number }}
         run: |
           args=(--set "$SET_SLUG")
-          if [[ "$EVENT_NAME" == workflow_dispatch ]]; then args+=(--rebuild); fi
+          if [[ "$EVENT_NAME" == workflow_dispatch || "$TRIGGER_CRON" == '0 14 6 11 *' || -n "$DRAFT_NUMBER" ]]; then
+            args+=(--rebuild)
+          fi
           python3 scripts/fetch_tcgcsv.py "${args[@]}"
 
       - name: Render the set pages
@@ -87,11 +103,16 @@ jobs:
         id: candidate
         env:
           GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ steps.review.outputs.number }}
         run: |
           git add -- data/sets site/sets site/sitemap.xml
           tree=$(git write-tree)
           echo "tree=$tree" >> "$GITHUB_OUTPUT"
           if git diff --cached --quiet; then
+            if [[ -n "$PR_NUMBER" ]]; then
+              git fetch --no-tags --depth=1 origin "refs/heads/$REVIEW_BRANCH"
+              test "$(git rev-parse 'FETCH_HEAD^{tree}')" = "$tree" || { echo "::error::Existing draft diverges from the verified unchanged snapshot."; exit 1; }
+            fi
             echo "No change from main. No price update to review." >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
@@ -103,9 +124,32 @@ jobs:
           git reset --quiet HEAD -- data/sets site/sets site/sitemap.xml
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
-      - name: Open a draft pull request
-        id: draft
-        if: steps.candidate.outputs.changed == 'true'
+      - name: Update an existing draft with the validated tree
+        if: steps.candidate.outputs.changed == 'true' && steps.review.outputs.number != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ steps.review.outputs.number }}
+          PREVIOUS_HEAD: ${{ steps.review.outputs.head }}
+          TREE: ${{ steps.candidate.outputs.tree }}
+        run: |
+          pr=$(gh pr view "$PR_NUMBER" --json state,isDraft,headRefOid)
+          jq -e --arg sha "$PREVIOUS_HEAD" '.state == "OPEN" and .isDraft and .headRefOid == $sha' <<< "$pr" > /dev/null
+          git fetch --no-tags --depth=1 origin "refs/heads/$REVIEW_BRANCH"
+          test "$(git rev-parse FETCH_HEAD)" = "$PREVIOUS_HEAD"
+          test "$(git show --no-patch --format=%ce FETCH_HEAD)" = '41898282+github-actions[bot]@users.noreply.github.com'
+          paths=$(gh pr diff "$PR_NUMBER" --name-only)
+          if grep -Ev '^(data/sets/[^/]+\.json|site/sets/[^/]+\.html|site/sitemap\.xml)$' <<< "$paths" | grep -q .; then
+            echo "::error::Reserved draft contains changes outside the price snapshot."
+            exit 1
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          head=$(git commit-tree "$TREE" -p "$GITHUB_SHA" -m 'chore(sets): refresh TCGCSV prices')
+          ref="refs/heads/$REVIEW_BRANCH"
+          git push --force-with-lease="$ref:$PREVIOUS_HEAD" origin "$head:$ref"
+
+      - name: Open a new draft pull request
+        if: steps.candidate.outputs.changed == 'true' && steps.review.outputs.number == ''
         continue-on-error: true
         uses: peter-evans/create-pull-request@v7
         with:
@@ -122,7 +166,7 @@ jobs:
             time BountyCharts retrieved the snapshot separately.
 
             This is a draft. Merging it is the owner's decision.
-          draft: always-true
+          draft: true
           add-paths: |
             data/sets
             site/sets

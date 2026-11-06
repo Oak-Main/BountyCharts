@@ -296,6 +296,7 @@ def build_scope(data: dict, slug: str | None = None) -> dict:
     slug = slug or data.get("slug") or ""
 
     for row in [*cards, *sealed]:
+        row["printing_display"] = row.get("price_subtype") or "No printing quoted"
         for field, missing in (("market", "No market price"), ("low", "No low quoted")):
             value = row.get(f"{field}_cents")
             row[f"{field}_display"] = cents_to_display(value) if value is not None else missing
