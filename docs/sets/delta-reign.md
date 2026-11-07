@@ -156,3 +156,36 @@ reserved draft from its verified receipt. Ready PRs are excluded from the
 refresh. Publishing requires a reviewed merge into main, the Cloudflare
 production branch. The deploy workflow then checks the live page, robots and
 sitemap against the reviewed result.
+
+## Post-release refresh handoff and action runtimes
+
+After publication of PR #17, a manual refresh on main completed successfully
+in [run 42325215278](https://github.com/Oak-Main/BountyCharts/actions/runs/42325215278).
+It validated parent `a627e382c672b2b10e195ae9b8bf53187bdaf42f`,
+head `0625b283180793d2d2dde6b6b50bad6dbd27ffb5` and
+tree `a83d65b86b407dd8fe906ef3fe73522752983b34`. Its renewed retrieval
+receipt is `2026-11-07T01:39:26Z`; all 162 selected product rows and the
+November 6 provider snapshot remain unchanged from published production.
+[Draft PR #19](https://github.com/Oak-Main/BountyCharts/pull/19) reserves the
+review branch for subsequent scheduled price updates. Keep that successor
+draft open until a substantive snapshot has been reviewed for publication.
+Later refreshes replace its candidate and retrieval receipt.
+
+The Actions settings were inspected during this handoff: “Allow GitHub
+Actions to create and approve pull requests” is unchecked and disabled at
+repository level. The run's `DRAFT_REQUIRED` receipt correctly identified
+that restriction; the reviewer opened #19 using existing GitHub access.
+No repository or organization permissions were changed. The existing draft
+update path, ready-for-review guard, exact-tree verification and reviewed
+merge boundary remain in force.
+
+The refresh run also reported forced Node.js 20-to-24 execution for older
+actions. The workflows now pin
+[checkout v7.0.1](https://github.com/actions/checkout/releases/tag/v7.0.1)
+and [create-pull-request v8.1.1](https://github.com/peter-evans/create-pull-request/releases/tag/v8.1.1)
+to their upstream release commit SHAs. Both declare Node.js 24. These
+workflows use GitHub-hosted runners; checkout's fork protection is left at
+its default and the workflows do not use `pull_request_target` or
+`workflow_run`. The refresh action's inputs and bot-committer defaults stay
+compatible. Cron times, credentials, permissions, branch names and draft-only
+publication behavior are unchanged.
