@@ -18,19 +18,19 @@
     "prices_url": "https://tcgcsv.com/tcgplayer/3/24831/prices",
     "catalogue_url": "https://tcgcsv.com/tcgplayer/3/24831/products",
     "group_id": 24831,
-    "retrieved_at_utc": "2026-11-06T20:11:22Z",
+    "retrieved_at_utc": "2026-11-07T01:47:49Z",
     "rows_sha256": "e7c65968f7528ad9f368257018988bf88bf115076e1c2e12139501c51ab4ca6b"
   },
   "sources": [
     {
       "name": "Card list, numbering and rarity — TCGplayer catalogue via TCGCSV, set group 24831",
       "url": "https://tcgcsv.com/tcgplayer/3/24831/products",
-      "retrieved_at_utc": "2026-11-06T20:11:22Z"
+      "retrieved_at_utc": "2026-11-07T01:47:49Z"
     },
     {
       "name": "Prices — TCGplayer market and low prices via TCGCSV, set group 24831",
       "url": "https://tcgcsv.com/tcgplayer/3/24831/prices",
-      "retrieved_at_utc": "2026-11-06T20:11:22Z"
+      "retrieved_at_utc": "2026-11-07T01:47:49Z"
     },
     {
       "name": "Release date and official card count — The Pokémon Company International, Pokémon TCG: Mega Evolution—Delta Reign product showcase",
@@ -2371,6 +2371,6 @@
       "price_subtype": "Normal"
     }
   ],
-  "retrieved_at_utc": "2026-11-06T20:11:22Z",
+  "retrieved_at_utc": "2026-11-07T01:47:49Z",
   "prices_as_of_utc": "2026-11-06T20:05:28Z"
 }
