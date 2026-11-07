@@ -41,7 +41,7 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       # Drift check on the COMMITTED tree, before anything re-renders it. The
       # render step below overwrites site/, so a drift test run after it would
@@ -84,7 +84,7 @@ jobs:
       contents: read
       deployments: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       # Same render the gate ran, so the published tree is the tree that
       # passed the gate.
