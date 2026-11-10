@@ -1,11 +1,11 @@
 {
   "site_name": "BountyCharts",
   "site_url": "https://bountycharts.com",
-  "legal_entity": "{{LEGAL_ENTITY}}",
-  "postal_address": "{{POSTAL_ADDRESS}}",
-  "contact_email": "{{CONTACT_EMAIL}}",
+  "legal_entity": "DUMMY Entity LLC",
+  "postal_address": "PO Box 0000, Nowhere, CA 00000",
+  "contact_email": "dummy@invalid.test",
   "governing_law": "California",
-  "effective_date": "{{EFFECTIVE_DATE}}",
+  "effective_date": "January 1, 2000",
   "analytics": [
     "Google Analytics 4 (Google LLC)"
   ],
