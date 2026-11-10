@@ -10,7 +10,7 @@ read before touching anything.
 
 ---
 
-## 1. Where the build stands right now
+## 1. Where the build stood on November 6
 
 The site went from **a research publication with a static marketing page** to
 **a working price-data platform that publishes a live set page and refreshes
@@ -29,7 +29,10 @@ The concrete state:
 | Publication rule | **Draft-only.** A refresh opens or updates a draft PR; a reviewed merge into `main` is what publishes |
 | Tests | 100, green on a Linux/LF checkout |
 | Last verified retrieval | `2026-11-06T20:11:22Z` (provider snapshot `2026-11-06T20:05:28Z`) |
-| Open PRs | 1 — #19, draft, `chore/set-prices`, holding the next refresh |
+| Open PRs at this snapshot | #19, draft, `chore/set-prices`, holding the next refresh |
+
+
+**November 9 reconciliation.** The November 6 table is historical. The refresh from [PR #19](https://github.com/Oak-Main/BountyCharts/pull/19) has merged. `main` at `aa39a34c` records a provider retrieval of `2026-11-09T01:09:52Z`. The public set page and sitemap both returned HTTP 200 during the November 9 review.
 
 ---
 
