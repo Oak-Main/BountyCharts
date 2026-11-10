@@ -1,0 +1,19 @@
+{
+  "site_name": "BountyCharts",
+  "site_url": "https://bountycharts.com",
+  "legal_entity": "Oak and Main Developers LLC",
+  "postal_address": "1223 Cleveland Ave, Suite 200, San Diego, CA 92103",
+  "contact_email": "admin@oakandmain.dev",
+  "governing_law": "California",
+  "effective_date": "November 10, 2026",
+  "analytics": [
+    "Google Analytics 4 (Google LLC)"
+  ],
+  "amazon": false,
+  "pages": [
+    "privacy",
+    "terms",
+    "affiliate-disclosure"
+  ],
+  "disclosure_url": "/affiliate-disclosure"
+}

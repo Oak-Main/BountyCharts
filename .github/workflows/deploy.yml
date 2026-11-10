@@ -11,6 +11,8 @@ on:
       - 'scripts/verify_live_set.py'
       - 'scripts/build_sets.py'
       - 'scripts/fetch_tcgcsv.py'
+      - 'scripts/legal_pages.py'
+      - 'legal/**'
       - 'tests/**'
       - 'models/**'
       - 'docs/**'
@@ -25,6 +27,8 @@ on:
       - 'scripts/verify_live_set.py'
       - 'scripts/build_sets.py'
       - 'scripts/fetch_tcgcsv.py'
+      - 'scripts/legal_pages.py'
+      - 'legal/**'
       - 'tests/**'
       - 'models/**'
       - 'docs/**'
@@ -58,6 +62,9 @@ jobs:
 
       - name: Validate site
         run: python3 scripts/validate_site.py
+
+      - name: Legal pages (fail closed while any token is unresolved)
+        run: python3 scripts/legal_pages.py --check
 
       # Nothing tested the gate itself until now, so a change to
       # validate_site.py could silently stop catching things.
@@ -95,6 +102,9 @@ jobs:
       # credentials mean "not configured", not "broken" — so detect and skip
       # rather than failing the check. Deploy starts automatically once the
       # secrets are added; no workflow edit needed.
+      - name: Legal pages (fail closed while any token is unresolved)
+        run: python3 scripts/legal_pages.py --check
+
       - name: Check Cloudflare credentials
         id: creds
         env:
