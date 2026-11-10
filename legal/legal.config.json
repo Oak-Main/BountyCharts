@@ -1,0 +1,19 @@
+{
+  "site_name": "BountyCharts",
+  "site_url": "https://bountycharts.com",
+  "legal_entity": "{{LEGAL_ENTITY}}",
+  "postal_address": "{{POSTAL_ADDRESS}}",
+  "contact_email": "{{CONTACT_EMAIL}}",
+  "governing_law": "California",
+  "effective_date": "{{EFFECTIVE_DATE}}",
+  "analytics": [
+    "Google Analytics 4 (Google LLC)"
+  ],
+  "amazon": false,
+  "pages": [
+    "privacy",
+    "terms",
+    "affiliate-disclosure"
+  ],
+  "disclosure_url": "/affiliate-disclosure"
+}
