@@ -109,6 +109,21 @@ class RefreshTest(unittest.TestCase):
             self.assertEqual(fetcher.main(), 0)
             refresh.assert_called_once_with(self.path, False)
 
+    def test_digital_code_cards_are_not_sealed_product(self):
+        products = [
+            {"productId": 10, "name": "Code Card - Delta Reign digital booster pack", "extendedData": []},
+            {"productId": 11, "name": "Code Card - Delta Reign Trainer Box digital bundle", "extendedData": []},
+            {"productId": 12, "name": "Delta Reign Booster Pack", "extendedData": []},
+            {"productId": 13, "name": "Demo", "extendedData": [{"name": "Number", "value": "001/010"}]},
+        ]
+        prices = {pid: [{"productId": pid, "subTypeName": "Normal", "marketPrice": 1.0, "lowPrice": 0.5}]
+                  for pid in (10, 11, 12, 13)}
+        cards, sealed = fetcher.parse_catalogue(products, prices)
+        self.assertEqual([row["tcgcsv_product_id"] for row in sealed], [12])
+        self.assertEqual(sealed[0]["product_type"], "booster_pack")
+        self.assertEqual([row["tcgcsv_product_id"] for row in cards], [13])
+        self.assertFalse(fetcher.is_digital_code_card("Booster Pack (Code Card Included)"))
+
     def test_a_case_is_distinct_from_its_contents(self):
         self.assertEqual(fetcher.classify_sealed("Elite Trainer Box Case"), "case")
         self.assertEqual(fetcher.classify_sealed("Elite Trainer Box"), "etb")

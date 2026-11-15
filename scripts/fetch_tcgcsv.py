@@ -215,6 +215,19 @@ def classify_sealed(name: str) -> str:
     return "sealed_product"
 
 
+def is_digital_code_card(name: str) -> bool:
+    """True for a Pokemon TCG Live code card.
+
+    TCGplayer lists the set's code cards in the same catalogue group as its
+    sealed product ("Code Card - Delta Reign digital booster pack"). They carry
+    no card number, so without this check they fall into the sealed table, and
+    one of them was even typed as a booster pack. A code card is a digital
+    redemption code, not a sealed physical product, so the set page lists
+    neither it nor its price.
+    """
+    return re.match(r"\s*code card\b", name.lower()) is not None
+
+
 def parse_catalogue(products: list[dict], prices: dict[int, list[dict]]) -> tuple[list[dict], list[dict]]:
     """Split the catalogue into numbered cards and sealed product SKUs.
 
@@ -264,6 +277,8 @@ def parse_catalogue(products: list[dict], prices: dict[int, list[dict]]) -> tupl
             })
         else:
             name = product.get("name") or ""
+            if is_digital_code_card(name):
+                continue
             chosen = one_price_per_product(product_rows).get(product_id)
             sealed.append({
                 "name": name,
