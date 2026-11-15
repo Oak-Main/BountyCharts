@@ -19,7 +19,7 @@
     "catalogue_url": "https://tcgcsv.com/tcgplayer/3/24831/products",
     "group_id": 24831,
     "retrieved_at_utc": "2026-11-15T01:13:59Z",
-    "rows_sha256": "f19185f949580827dba271aa83221ef59fb33050ebce5b7c90d7516f38c2cf43"
+    "rows_sha256": "dd681e59e967296ee908699e1ed89547b600e7b3475498ff24e4b8cf138b6fa6"
   },
   "sources": [
     {
@@ -2181,24 +2181,6 @@
     }
   ],
   "sealed": [
-    {
-      "name": "Code Card - Delta Reign Trainer Box digital bundle",
-      "product_type": "sealed_product",
-      "tcgcsv_product_id": 732664,
-      "tcgplayer_url": "https://www.tcgplayer.com/product/732664/pokemon-me06-delta-reign-code-card-delta-reign-trainer-box-digital-bundle",
-      "market_cents": null,
-      "low_cents": 25,
-      "price_subtype": "Normal"
-    },
-    {
-      "name": "Code Card - Delta Reign digital booster pack",
-      "product_type": "booster_pack",
-      "tcgcsv_product_id": 732666,
-      "tcgplayer_url": "https://www.tcgplayer.com/product/732666/pokemon-me06-delta-reign-code-card-delta-reign-digital-booster-pack",
-      "market_cents": 4,
-      "low_cents": 1,
-      "price_subtype": "Normal"
-    },
     {
       "name": "Delta Reign 3 Pack Blister [Seel]",
       "product_type": "blister",
