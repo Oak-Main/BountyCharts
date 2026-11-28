@@ -5,21 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- ga4:start --><script async src="https://www.googletagmanager.com/gtag/js?id=G-T86C9NC8YB"></script><script src="/assets/ga4.d611d877.js"></script><!-- ga4:end -->
 <title>BountyCharts — TCG price and metagame intelligence</title>
-<meta name="description" content="What will this deck cost you next week? BountyCharts tracks the intersection of trading card prices and competitive metagame shifts, starting with Riftbound.">
+<meta name="description" content="Explore trading card prices with the Pokémon Delta Reign set guide and independent field guides to card condition, collection value, and the metagame.">
   <meta name="robots" content="index,follow,max-image-preview:large">
 <link rel="canonical" href="https://bountycharts.com/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://bountycharts.com/">
 <meta property="og:title" content="BountyCharts — TCG price and metagame intelligence">
-<meta property="og:description" content="What will this deck cost you next week? Price and metagame intelligence for trading card games, starting with Riftbound.">
+<meta property="og:description" content="Explore trading card prices with the Pokémon Delta Reign set guide and independent field guides to card condition, collection value, and the metagame.">
 <meta property="og:site_name" content="BountyCharts">
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:image" content="https://bountycharts.com/assets/og-card.e33ef5a7.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="BountyCharts wordmark above the question: what will this deck cost you next week? Strapline: price movement against metagame shift, Riftbound first.">
-<meta name="theme-color" content="#0E1116" media="(prefers-color-scheme: dark)">
-<meta name="theme-color" content="#FAFAF8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#112920" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#112920" media="(prefers-color-scheme: light)">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><path d='M16 2 30 16 16 30 2 16Z' fill='%23B8862B'></path><path d='M9 18.5h4v-4h3v-3h3v5h4' fill='none' stroke='%230E1116' stroke-width='3' stroke-linecap='square'></path></svg>">
 <link rel="apple-touch-icon" href="/assets/touch-icon-180.b195fa86.png">
 <script type="application/ld+json">
@@ -54,340 +54,425 @@
 </script>
 <style>
   :root {
-    --bg: #FAFAF8;
-    --surface: #FFFFFF;
-    --ink: #14181E;
-    --ink-soft: #59616E;
-    --ink-faint: #6D747F;
-    --rule: #E2E4E4;
-    --gold: #966C1D;
-    --gold-bright: #7A5716;
-    --up: #17795E;
-    --down: #B23B30;
-    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --bg: #f8f7f2;
+    --paper: #fffef9;
+    --ink: #192f28;
+    --muted: #4d6057;
+    --rule: #cdd1c5;
+    --tint: #eceee5;
+    --label: #64603c;
+    --brass: #eccb88;
+    --night: #112920;
+    --night-ink: #f9f5e8;
+    --serif: Georgia, "Times New Roman", serif;
+    --sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+    --mono: ui-monospace, "SFMono-Regular", Consolas, monospace;
+    color-scheme: light;
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #0E1116; --surface: #161A21; --ink: #E9ECF1; --ink-soft: #99A2B0;
-      --ink-faint: #838C9A; --rule: #232932; --gold: #D9A94F; --gold-bright: #EBC475;
-      --up: #4FBF97; --down: #E8756A;
+      --bg: #15241e;
+      --paper: #1c2c25;
+      --ink: #f1efe4;
+      --muted: #c0c9bd;
+      --rule: #46554b;
+      --tint: #203028;
+      --label: #d9bd83;
+      color-scheme: dark;
     }
   }
-
   * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--ink);
-    font-family: var(--sans);
-    font-size: 16px;
-    line-height: 1.65;
-    -webkit-font-smoothing: antialiased;
-  }
-  .wrap {
-    max-width: 60rem;
-    margin: 0 auto;
-    padding: 2rem 1.5rem 5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 4rem;
-  }
-  /* <main> is a grouping landmark, not a layout step: it carries the same
-     column flow so the 4rem rhythm is identical with or without it. */
-  main {
-    display: flex;
-    flex-direction: column;
-    gap: 4rem;
-  }
+  body { margin: 0; color: var(--ink); background: var(--bg); font: 1rem/1.6 var(--sans); }
+  h1, h2, h3, p, ul { margin: 0; }
+  ul { list-style: none; padding: 0; }
+  h1, h2, h3 { font: 400 1em/1.07 var(--serif); text-wrap: balance; }
+  a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: .25em; }
+  a:focus-visible { outline: 3px solid #327bb4; outline-offset: 4px; }
+  .mast a:focus-visible, .hero a:focus-visible, footer a:focus-visible { outline-color: #ffde92; }
+  .skip { position: absolute; z-index: 3; left: .6rem; top: .6rem; padding: .7rem 1rem; background: var(--paper); transform: translateY(-160%); }
+  .skip:focus { transform: none; }
+  .shell { width: min(76rem, calc(100% - clamp(2rem, 9vw, 9rem))); margin-inline: auto; }
+  .mast, .hero, footer { color: var(--night-ink); background: var(--night); }
+  .mast-inner, .foot-top { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; }
+  .mast-inner { min-height: 5rem; border-bottom: 1px solid #486052; }
+  .wordmark { display: inline-flex; align-items: center; gap: .62rem; font: 600 1.65rem/1.2 var(--serif); letter-spacing: -.055em; text-decoration: none; }
+  .brand-mark { display: block; flex-shrink: 0; position: relative; width: 1rem; height: 1rem; transform: rotate(45deg); background: var(--brass); margin-inline: .2rem; }
+  .brand-mark::before { content: ""; position: absolute; inset: 3px; border: 1px solid var(--night); }
+  .brand-mark::after { content: ""; position: absolute; inset: 6px; background: var(--night); }
+  nav { display: flex; align-items: center; flex-wrap: wrap; gap: clamp(1rem, 3vw, 2.35rem); }
+  nav a { display: inline-flex; align-items: center; min-height: 44px; font-size: .9rem; text-decoration: none; }
+  nav a:hover, .secondary:hover, .text-link:hover { text-decoration: underline; text-decoration-thickness: 2px; }
+  .set-nav { color: var(--brass); }
+  .set-nav::before { content: ""; height: 1rem; width: 1px; margin-right: clamp(1rem, 3vw, 2.35rem); background: #627567; }
+  .hero:focus { outline: none; }
+  .hero { border-bottom: 4px solid #bba16a; }
+  .hero-grid { display: grid; grid-template-columns: 1.03fr 1fr; align-items: center; gap: clamp(2rem, 5vw, 5rem); padding-block: clamp(2.75rem, 5vw, 4.75rem); }
+  .eyebrow, .format { color: var(--label); font: 600 .8rem/1.4 var(--mono); letter-spacing: .09em; text-transform: uppercase; }
+  .hero-label { display: flex; align-items: center; gap: .75rem; color: var(--brass); }
+  .hero-label::before { content: ""; width: 2rem; height: 1px; background: currentColor; }
+  h1 { font-size: clamp(3.8rem, 6.8vw, 6.75rem); line-height: .99; letter-spacing: -.062em; margin: 1.2rem 0 1.45rem; }
+  h1 em { display: block; color: var(--brass); font-weight: 400; }
+  .intro { color: #d6dfd3; font-size: clamp(1.05rem, 1.3vw, 1.2rem); max-width: 42ch; line-height: 1.6; }
+  .hero-actions { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem 1.55rem; margin-top: 1.65rem; }
+  .primary, .secondary, .text-link { display: inline-flex; align-items: center; min-height: 46px; font-size: .96rem; font-weight: 650; }
+  .primary { padding: .72rem 1.25rem; color: #1b2c21; background: var(--brass); border: 1px solid var(--brass); border-radius: 3px; text-decoration: none; }
+  .primary:hover { background: #ffe2a6; }
+  .featured { display: block; text-decoration: none; min-width: 0; }
+  .featured:hover .folio { border-color: var(--brass); }
+  .figure-caption { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .2rem 1rem; padding-top: .6rem; color: #c9d5c9; font-size: .84rem; }
+  .figure-caption b { font-weight: 600; color: var(--night-ink); }
+  .guides, .archive, .notes { padding-block: clamp(3rem, 5vw, 5rem); }
+  .section-head { display: flex; align-items: end; justify-content: space-between; gap: 1rem; margin-bottom: 1.65rem; }
+  h2 { font-size: clamp(2.3rem, 3.6vw, 3.6rem); letter-spacing: -.055em; margin-top: .48rem; }
+  .section-intro, .shelf p, .archive-copy > h2 + p, .notes h2 + p, .documents small { color: var(--muted); }
+  .shelves { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.1rem; }
+  .shelf { --ink-detail: #2d654e; --tile: #d9e6d9; padding: clamp(1.25rem, 2.2vw, 2rem); border: 1px solid var(--rule); border-top: 3px solid #547d66; background: var(--paper); }
+  .condition { --ink-detail: #795c2b; --tile: #eee3c9; border-top-color: #a48243; }
+  .meta { --ink-detail: #4b5973; --tile: #dfe4ed; border-top-color: #6f8299; }
+  .shelf h3 { font-size: clamp(1.6rem, 2vw, 2.02rem); letter-spacing: -.045em; margin-top: 1.15rem; }
+  .shelf p { margin: .75rem 0 1.25rem; }
+  .instrument { display: block; width: 2.9rem; height: 2.9rem; background: var(--tile); color: var(--ink-detail); border-radius: 50%; position: relative; }
+  .instrument::before, .instrument::after { content: ""; position: absolute; }
+  .loupe::before { width: .85rem; height: .85rem; border: 2px solid; border-radius: 50%; top: .64rem; left: .72rem; }
+  .loupe::after { width: .66rem; height: 2px; background: currentColor; transform: rotate(45deg); top: 1.82rem; left: 1.62rem; }
+  .sleeves::before, .sleeves::after { width: .8rem; height: 1.08rem; border: 1.5px solid; border-radius: 2px; top: .93rem; left: .80rem; transform: rotate(-17deg); }
+  .sleeves::after { top: .7rem; left: 1.28rem; transform: rotate(10deg); background: var(--tile); }
+  .bars::before { width: 1.42rem; height: 1.2rem; left: .72rem; top: .8rem; border-bottom: 1.5px solid; background: linear-gradient(currentColor,currentColor) 0 100% / 19% 55%, linear-gradient(currentColor,currentColor) 50% 100% / 19% 100%, linear-gradient(currentColor,currentColor) 100% 100% / 19% 72%; background-repeat: no-repeat; }
+  .shelf-links li { border-top: 1px solid var(--rule); }
+  .shelf-links a { display: flex; align-items: center; justify-content: space-between; gap: .5rem; padding: .65rem 0; min-height: 44px; font-size: .96rem; font-weight: 580; text-decoration: none; }
+  .shelf-links a::after { content: ""; flex: none; width: .32rem; height: .32rem; border: solid currentColor; border-width: 1px 1px 0 0; transform: rotate(45deg); }
+  .shelf-links a:hover, .documents a:hover strong { text-decoration: underline; text-underline-offset: .2em; }
+  .archive { background: var(--tint); border-block: 1px solid var(--rule); }
+  .archive-grid { display: grid; grid-template-columns: .85fr 1.15fr; align-items: start; gap: clamp(2rem, 8vw, 8rem); }
+  .archive-copy > h2 + p { margin-top: 1rem; max-width: 36ch; }
+  .text-link { margin-top: .7rem; }
+  .documents { border-top: 1px solid var(--ink); }
+  .documents li { border-bottom: 1px solid var(--rule); }
+  .documents a { display: flex; align-items: center; gap: .7rem; justify-content: space-between; padding: 1.15rem 0; text-decoration: none; }
+  .documents strong, .documents small { display: block; }
+  .documents strong { font: normal 1.4rem/1.25 var(--serif); }
+  .documents small { margin-top: .25rem; font-size: .92rem; }
+  .format { font-size: .76rem; }
+  .notes { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 6vw, 5rem); }
+  .notes > div + div { border-left: 1px solid var(--rule); padding-left: clamp(2rem, 5vw, 4rem); }
+  .notes h2 { font-size: clamp(1.8rem, 2.4vw, 2.6rem); margin-bottom: .75rem; }
+  footer { padding: 2.5rem 0; }
+  .foot-top { padding-bottom: 1.2rem; border-bottom: 1px solid #476051; margin-bottom: 1.1rem; }
+  footer p { color: #c1cdbf; max-width: 96ch; font-size: .85rem; }
+  footer p + p { margin-top: .65rem; }
 
-  /* wordmark */
-  .brand {
-    display: flex;
-    align-items: baseline;
-    gap: 0.55rem;
-    font-family: var(--mono);
-    font-size: 0.95rem;
-    letter-spacing: 0.02em;
-    font-weight: 700;
-  }
-  .brand .mark { color: var(--gold); }
-  .brand .tag {
-    font-weight: 400;
-    font-size: 0.7rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--ink-faint);
-  }
-
-  /* hero */
-  .hero { display: flex; flex-direction: column; gap: 1.5rem; }
-  h1 {
-    margin: 0;
-    font-size: clamp(2.1rem, 6vw, 3.6rem);
-    line-height: 1.08;
-    letter-spacing: -0.03em;
-    font-weight: 700;
-    text-wrap: balance;
-    max-width: 18ch;
-  }
-  h1 .accent { color: var(--gold); }
-  .lede {
-    margin: 0;
-    font-size: clamp(1.05rem, 2.2vw, 1.25rem);
-    color: var(--ink-soft);
-    max-width: 54ch;
-  }
-
-  /* ticker strip — the product thesis, shown not told */
-  .ticker {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
-    gap: 1px;
-    background: var(--rule);
-    border: 1px solid var(--rule);
-    border-radius: 6px;
+  /* A paper insert and two cloth covers, drawn at the size of their host panel. */
+  .folio {
+    --foil: #e1c389;
+    position: relative;
+    container-type: inline-size;
+    isolation: isolate;
+    width: 100%;
+    max-width: 37rem;
+    aspect-ratio: 1.45;
+    justify-self: center;
     overflow: hidden;
+    background:
+      radial-gradient(ellipse at 53% 45%, #2b4841 0%, #1a302b 41%, transparent 72%),
+      repeating-linear-gradient(125deg, #fff1 0 0.35px, transparent 0.65px 6px),
+      #152521;
+    border: 1px solid #46564b;
   }
-  .cell {
-    background: var(--surface);
-    padding: 1.1rem 1.2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-  }
-  .cell .k {
-    font-family: var(--mono);
-    font-size: 0.66rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--ink-faint);
-  }
-  .cell .v {
-    font-family: var(--mono);
-    font-size: 1.35rem;
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
-    line-height: 1.2;
-  }
-  .cell .d { font-family: var(--mono); font-size: 0.78rem; font-variant-numeric: tabular-nums; }
-  .up { color: var(--up); }
-  .down { color: var(--down); }
-  .ticker-cap {
-    font-size: 0.85rem;
-    color: var(--ink-soft);
-    max-width: 62ch;
-    margin: 0 0 0.75rem;
-  }
-  .cell.sample { position: relative; }
-  /* This badge is the disclosure marking the four figures above as fictional,
-     so it is the one label on the page that must not be hard to read. It had
-     opacity 0.75, which composites toward the background and dropped it to
-     2.94:1 in light and 3.49:1 in dark -- below AA even after the palette fix,
-     and invisible to a check that reads the specified colour. No opacity here.
-     Sized to match .cell .k rather than inventing a smaller step. */
-  .cell.sample::after {
-    content: "sample";
+  .folio::before,
+  .folio::after {
     position: absolute;
-    top: 0.6rem; right: 0.7rem;
-    font-family: var(--mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
+    content: "";
+    inset: 5.5% 4%;
+    pointer-events: none;
+    background:
+      linear-gradient(#91a393, #91a393) left top / 0.7rem 1px,
+      linear-gradient(#91a393, #91a393) left top / 1px 0.7rem,
+      linear-gradient(#91a393, #91a393) right bottom / 0.7rem 1px,
+      linear-gradient(#91a393, #91a393) right bottom / 1px 0.7rem;
+    background-repeat: no-repeat;
   }
-
-  /* sections */
-  section { display: flex; flex-direction: column; gap: 1.25rem; }
-  h2 {
-    margin: 0;
-    font-size: 0.72rem;
-    font-family: var(--mono);
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--gold);
-    font-weight: 700;
+  .folio::after { transform: scaleX(-1); }
+  .folio-shadow {
+    position: absolute;
+    inset: 60% 18% 6% 26%;
+    transform: rotate(-9deg);
+    border-radius: 50%;
+    background: #060c0a;
+    filter: blur(2cqw);
+    opacity: 0.76;
   }
-  h3 { margin: 0; font-size: 1.05rem; font-weight: 650; }
-  p { margin: 0; max-width: 60ch; color: var(--ink-soft); }
-  p.tight { max-width: 58ch; }
-
-  .three {
+  .folio-back, .folio-paper, .folio-cover {
+    position: absolute;
+    width: 39%;
+    height: 76%;
+    top: 11.5%;
+    border-radius: 2% 3% 3% 2%;
+  }
+  .folio-back {
+    left: 41%;
+    transform: rotate(16deg);
+    border: 1px solid #b1996b;
+    background:
+      repeating-radial-gradient(ellipse at 15% 0%, transparent 0 4px, #879c83 4.15px 4.6px, transparent 4.8px 6px),
+      #274e43;
+    box-shadow: 0.9cqw 1.6cqw 2.5cqw #071310ad, inset 0 0 0 0.8cqw #244137;
+  }
+  .folio-paper {
+    left: 35.5%;
+    transform: rotate(4deg);
+    background: repeating-linear-gradient(0deg, #d0c7a9, #d0c7a9 2px, #b4ac8d 2px, #b4ac8d 3px);
+    box-shadow: inset 0.7cqw 0 2cqw #514e39, 0.45cqw 0.9cqw 1.1cqw #05100cb3;
+  }
+  .folio-cover {
+    left: 25%;
+    transform: rotate(-10deg);
+    overflow: hidden;
+    color: var(--foil);
+    background:
+      repeating-linear-gradient(87deg, #fff1 0 0.4px, transparent 0.7px 3px),
+      linear-gradient(110deg, #152e27, #295444 12%, #254838 55%, #193528);
+    border: 1px solid #a69b71;
+    box-shadow: inset 0.8cqw 0 0.5cqw #0d241d8c, 1.4cqw 1.8cqw 2.4cqw #020a07a6;
+  }
+  .folio-cover::before {
+    content: "";
+    position: absolute;
+    inset: 4.3% 5.8%;
+    border: 1px solid #b9a36d;
+    outline: 1px solid #948b62;
+    outline-offset: 0.45cqw;
+  }
+  .folio-topline, .folio-imprint {
+    position: absolute;
+    left: 11%;
+    right: 11%;
+    font: 600 clamp(0.43rem, 1.65cqw, 0.69rem)/1.3 ui-monospace, monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+  }
+  .folio-topline {
+    top: 9.5%;
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 4%;
+    border-bottom: 1px solid #a99a6a;
+  }
+  .folio-engraving {
+    position: absolute;
+    left: 12%;
+    right: 12%;
+    top: 21%;
+    bottom: 30%;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-    gap: 1.75rem;
+    place-items: center;
   }
-  .three > div { display: flex; flex-direction: column; gap: 0.45rem; }
-  .three .n {
-    font-family: var(--mono);
-    font-size: 0.68rem;
-    letter-spacing: 0.12em;
-    color: var(--ink-faint);
+  .folio-rosette {
+    position: relative;
+    width: 88%;
+    aspect-ratio: 1;
+    border: 1px solid #b8a777;
+    outline: 1px dotted #deb97c;
+    outline-offset: 0.7cqw;
+    border-radius: 50%;
+    background: repeating-radial-gradient(circle, transparent 0 8%, #bbc29880 8.2% 8.8%, transparent 9.2% 12%);
   }
-
-  .reading {
-    margin: 0;
-    padding-left: 1.1rem;
-    max-width: 60ch;
-    color: var(--ink-soft);
-    display: flex;
-    flex-direction: column;
-    gap: 0.55rem;
+  .folio-rosette i {
+    position: absolute;
+    inset: 2.5% 27%;
+    border: 1px solid #ead299;
+    border-radius: 50%;
+    background: repeating-radial-gradient(ellipse at center, transparent 0 7%, #cfbd8ba8 7.6% 9%, transparent 9.5% 13%);
   }
-  .note {
-    border-left: 3px solid var(--gold);
-    padding: 0.9rem 0 0.9rem 1.15rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
+  .folio-rosette i:nth-child(2) { transform: rotate(30deg); }
+  .folio-rosette i:nth-child(3) { transform: rotate(60deg); }
+  .folio-rosette i:nth-child(4) { transform: rotate(90deg); }
+  .folio-rosette i:nth-child(5) { transform: rotate(120deg); }
+  .folio-rosette i:nth-child(6) { transform: rotate(150deg); }
+  .folio-gem {
+    position: absolute;
+    width: 25%;
+    aspect-ratio: 1;
+    transform: rotate(45deg);
+    background: conic-gradient(from 45deg, #a48854 0 25%, #f4db9f 25% 50%, #c1a267 50% 75%, #e1c58e 75%);
+    border: 1px solid #e7d399;
+    outline: 0.36cqw solid #203f33;
   }
-  .note .k {
-    font-family: var(--mono);
-    font-size: 0.66rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--gold);
-    font-weight: 700;
+  .folio-imprint {
+    bottom: 10%;
+    border-top: 1px solid #a99a6a;
+    padding-top: 4%;
+    text-align: center;
   }
-
-  footer {
-    border-top: 1px solid var(--rule);
-    padding-top: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-    font-size: 0.82rem;
-    color: var(--ink-faint);
-  }
-  a { color: var(--gold); text-underline-offset: 2px; }
-  /* Hover darkens rather than lightens, and thickens the underline so the
-     affordance does not depend on colour at all. */
-  a:hover { color: var(--gold-bright); text-decoration-thickness: 2px; }
-  a:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; border-radius: 2px; }
-
-  @media (prefers-reduced-motion: reduce) {
-    * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+  .folio-imprint strong {
+    display: block;
+    margin-top: 0.18em;
+    font: normal clamp(0.94rem, 5.3cqw, 2.1rem)/1.1 Georgia, serif;
+    letter-spacing: -0.045em;
+    text-transform: none;
   }
 
-  /* Print. Without this, a reader whose OS is in dark mode prints the dark
-     palette — a near-black page-fill — because prefers-color-scheme still
-     applies to the print stylesheet. Force the light palette back, and print
-     the one outbound URL, which is otherwise lost the moment the page leaves
-     the screen. */
+  @media (min-width: 52rem) {
+    .shelf { display: grid; grid-template-rows: subgrid; grid-row: span 3; row-gap: 0; }
+  }
+  @media (max-width: 51.99rem) {
+    .hero-grid { grid-template-columns: 1fr; gap: 2rem; }
+    h1 { font-size: clamp(3.6rem, 9.5vw, 5.3rem); }
+    .featured { width: min(100%, 35rem); }
+    .shelves { grid-template-columns: 1fr; }
+    .section-head { display: block; }
+    .section-intro { margin-top: .65rem; }
+    .archive-grid { grid-template-columns: 1fr; }
+    .notes { gap: 1.6rem; }
+  }
+  @media (max-width: 37rem) {
+    .mast-inner { min-height: 4.25rem; gap: .6rem; }
+    .mast .wordmark { font-size: 1.3rem; }
+    .mast nav { gap: .9rem; }
+    .mast nav a { font-size: .86rem; }
+    .mast .set-nav { display: none; }
+    .hero-grid { padding-block: 2.3rem 1.8rem; }
+    .hero-actions { gap: .35rem 1rem; }
+    .notes { grid-template-columns: 1fr; }
+    .notes > div + div { border-left: 0; border-top: 1px solid var(--rule); padding: 1.75rem 0 0; }
+    .foot-top { flex-direction: column; align-items: start; gap: .35rem; }
+  }
   @media print {
-    :root {
-      --bg: #FFFFFF; --surface: #FFFFFF; --ink: #000000; --ink-soft: #333333;
-      --ink-faint: #555555; --rule: #BBBBBB; --gold: #6B4E15; --gold-bright: #6B4E15;
-      --up: #10553F; --down: #7E2A22;
-    }
-    .wrap { padding: 0; gap: 2rem; max-width: none; }
-    main { gap: 2rem; }
-    a { text-decoration: underline; }
-    a[href^="http"]::after {
-      content: " (" attr(href) ")";
-      font-family: var(--mono);
-      font-size: 0.75em;
-      word-break: break-all;
-    }
-    .ticker { break-inside: avoid; }
-    .cell.sample::after { opacity: 1; }
-    section, .note { break-inside: avoid; }
+    :root { --bg: #FFFFFF; --paper: #FFFFFF; --tint: #FFFFFF; --ink: #111; --rule: #bbb; --muted: #333; --label: #333; --night: #fff; --night-ink: #111; --brass: #453509; color-scheme: light; }
+    body { font-size: 10pt; }
+    .shell { width: 100%; }
+    .featured, .skip, .mast nav, .instrument, .hero-label::before { display: none; }
+    .hero-grid, .shelves, .archive-grid, .notes { display: block; }
+    .mast-inner, .hero-grid, .guides, .archive, .notes, footer { min-height: 0; padding-block: .6rem; }
+    h1 { font-size: 30pt; margin-block: .45rem; }
+    h1 em { display: inline; }
+    h2 { font-size: 22pt; }
+    .intro, footer p { color: #333; }
+    .shelf, .documents li, .notes > div { break-inside: avoid; margin-bottom: .6rem; }
+    .notes > div + div { border-left: 0; padding: 0; }
+    a[href^="http"]::after { content: " (" attr(href) ")"; font: 9pt var(--mono); overflow-wrap: anywhere; }
+    .documents a, .text-link { display: block; }
+    .hero-actions, .section-head, .foot-top { margin: .3rem 0; }
+    .section-intro, .secondary, .foot-top nav, .shelf-links a::after { display: none; }
+    .intro, .archive-copy > h2 + p { max-width: none; }
+    .primary { background: none; color: #111; padding: 0; border: 0; min-height: 0; text-decoration: underline; }
+    .primary::after { content: " (bountycharts.com" attr(href) ")"; font: 9pt var(--mono); }
+    .shelf { padding: .5rem .75rem; margin-bottom: .3rem; }
+    .shelf h3, .shelf p { margin: .25rem 0; }
+    .shelf-links a, .documents a, .text-link { min-height: 0; padding: .25rem 0; margin: 0; }
+    .foot-top { padding-bottom: .3rem; }
+    .archive { break-before: page; }
+    .format { display: none; }
   }
 </style>
 </head>
 <body>
-<div class="wrap">
-
-  <header class="brand">
-    <span class="mark">◈ BountyCharts</span>
-    <span class="tag">TCG price × meta</span>
-  </header>
-
-  <main>
-
-  <div class="hero">
-    <h1>What will this deck <span class="accent">cost you</span> next week?</h1>
-    <p class="lede">Every trading card game has a dozen tools that tell you which deck is best. None of them tell you what it will cost to build by the time you finish reading. BountyCharts sits on that intersection — price movement against metagame shift.</p>
+<a class="skip" href="#main">Skip to content</a>
+<header class="mast">
+  <div class="shell mast-inner">
+    <a class="wordmark" href="/" aria-label="BountyCharts home"><i class="brand-mark" aria-hidden="true"></i>BountyCharts</a>
+    <nav aria-label="Main navigation">
+      <a href="#guides">Field guides</a>
+      <a href="#research">Research</a>
+      <a class="set-nav" href="/sets/delta-reign">Set guide</a>
+    </nav>
   </div>
-
-  <div>
-  <p class="ticker-cap" id="ticker-cap">Illustrative deck and metagame figures. For sourced card prices, see the <a href="/sets/delta-reign">Pokémon Delta Reign set guide</a>.</p>
-  <div class="ticker" role="img" aria-labelledby="ticker-cap">
-    <div class="cell sample">
-      <span class="k">Deck cost · 7d</span>
-      <span class="v up">+18.4%</span>
-      <span class="d up">▲ tracking meta share</span>
-    </div>
-    <div class="cell sample">
-      <span class="k">Card · 7d</span>
-      <span class="v down">−9.1%</span>
-      <span class="d down">▼ play rate falling</span>
-    </div>
-    <div class="cell sample">
-      <span class="k">Spread</span>
-      <span class="v">11.2%</span>
-      <span class="d">market vs. listed</span>
-    </div>
-    <div class="cell sample">
-      <span class="k">Reprint risk</span>
-      <span class="v">Elevated</span>
-      <span class="d">set rotation window</span>
-    </div>
-  </div>
-  </div>
-
-  <section>
-    <h2>What it does</h2>
-    <div class="three">
-      <div>
-        <span class="n">01</span>
-        <h3>Deck cost, forecast</h3>
-        <p>Track what a list costs now, what it cost last week, and which cards are driving the change.</p>
+</header>
+<main>
+  <section class="hero" id="main" tabindex="-1" aria-labelledby="hero-title">
+    <div class="shell hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow hero-label">Trading card research</p>
+        <h1 id="hero-title">A field guide to <em>card prices.</em></h1>
+        <p class="intro">Price a collection, compare printings, and understand how tournament play shapes the value of a card.</p>
+        <div class="hero-actions">
+          <a class="primary" href="/sets/delta-reign">Explore Delta Reign</a>
+          <a class="secondary" href="#guides">Browse field guides</a>
+        </div>
       </div>
-      <div>
-        <span class="n">02</span>
-        <h3>Movement, explained</h3>
-        <p>Price shifts tied to the tournament result or meta change that caused them — not just a number that moved.</p>
+      <a class="featured" href="/sets/delta-reign">
+        <div class="folio" role="img" aria-label="Archive folio for Pokémon TCG’s Delta Reign expansion, set ME06.">
+          <div class="folio-shadow" aria-hidden="true"></div>
+          <div class="folio-back" aria-hidden="true"></div>
+          <div class="folio-paper" aria-hidden="true"></div>
+          <div class="folio-cover" aria-hidden="true">
+            <div class="folio-topline"><span>Set archive</span><span>ME06</span></div>
+            <div class="folio-engraving">
+              <div class="folio-rosette">
+                <i></i><i></i><i></i><i></i><i></i><i></i>
+              </div>
+              <span class="folio-gem"></span>
+            </div>
+            <div class="folio-imprint"><span>Pokémon TCG</span><strong>Delta Reign</strong></div>
+          </div>
+        </div>
+        <div class="figure-caption"><b>Featured set guide</b><span>Card list &amp; sourced prices</span></div>
+      </a>
+    </div>
+  </section>
+
+  <section class="guides shell" id="guides" aria-labelledby="guide-title">
+    <div class="section-head">
+      <div><p class="eyebrow">The guide library</p><h2 id="guide-title">At the collector’s desk</h2></div>
+      <p class="section-intro">8 field guides</p>
+    </div>
+    <div class="shelves">
+      <div class="shelf pricing">
+        <div class="shelf-heading"><span class="instrument loupe" aria-hidden="true"></span><h3>Pricing a collection</h3></div>
+        <p>Work from comparable sales and account for what it costs to sell.</p>
+        <ul class="shelf-links">
+          <li><a href="/how-to-price-a-card-collection">How to price a collection</a></li>
+          <li><a href="/selling-fees-comparison">Marketplace selling fees</a></li>
+          <li><a href="/sealed-vs-singles">Sealed product or singles?</a></li>
+        </ul>
       </div>
-      <div>
-        <span class="n">03</span>
-        <h3>Spread and reprint risk</h3>
-        <p>Where listed prices diverge from real sales, and which cards sit in a rotation or reprint window.</p>
+      <div class="shelf condition">
+        <div class="shelf-heading"><span class="instrument sleeves" aria-hidden="true"></span><h3>Examining a card</h3></div>
+        <p>Check condition, recognize chase cards, and weigh the cost of grading.</p>
+        <ul class="shelf-links">
+          <li><a href="/card-condition-guide">The card condition scale</a></li>
+          <li><a href="/card-grading-guide">When is grading worth it?</a></li>
+          <li><a href="/chase-cards-explained">What makes a chase card?</a></li>
+        </ul>
+      </div>
+      <div class="shelf meta">
+        <div class="shelf-heading"><span class="instrument bars" aria-hidden="true"></span><h3>Reading the market</h3></div>
+        <p>Follow the link between competitive play, card supply, and demand.</p>
+        <ul class="shelf-links">
+          <li><a href="/what-is-the-metagame">Understanding the metagame</a></li>
+          <li><a href="/riftbound-card-price-guide">What moves Riftbound prices?</a></li>
+        </ul>
       </div>
     </div>
   </section>
 
-  <section>
-    <h2>Why Riftbound first</h2>
-    <p class="tight">Riot's card game launched into the West in October 2025 with an active secondary market, a fast-moving metagame, and a permissive fan-content policy. It is young enough that the price history is thin and the information layer is still forming — which is exactly where this kind of tool is worth building. Other games follow.</p>
-  </section>
-
-  <section>
-    <h2>What this is not</h2>
-    <div class="note">
-      <span class="k">No buy signals</span>
-      <p>BountyCharts does not publish buyout alerts, price predictions, or investment advice, and never will. Broadcasting a buy signal to subscribers is the thing that creates the spike — which makes later readers into exit liquidity for earlier ones. This is decision support: what the data says, and where it came from. What you do with it is yours.</p>
+  <section class="archive" id="research" aria-labelledby="research-title">
+    <div class="shell archive-grid">
+      <div class="archive-copy"><p class="eyebrow">Open research</p><h2 id="research-title">Behind the numbers</h2>
+        <p>Read the sources, inspect individual claims, or run the model with your own assumptions.</p>
+        <a class="text-link" href="https://github.com/Oak-Main/BountyCharts">View the project on GitHub</a>
+      </div>
+      <ul class="documents">
+        <li><a href="https://github.com/Oak-Main/BountyCharts/blob/main/docs/tcg-deep-dive-2026.md"><span><strong>The TCG market deep dive</strong><small>Primary-source research on the 2024–2026 market</small></span><span class="format">Report</span></a></li>
+        <li><a href="https://github.com/Oak-Main/BountyCharts/blob/main/docs/fact-check-ledger.md"><span><strong>The fact-check ledger</strong><small>Evidence and verdicts for 38 market claims</small></span><span class="format">Ledger</span></a></li>
+        <li><a href="https://github.com/Oak-Main/BountyCharts/blob/main/models/unit_economics.py"><span><strong>The unit-economics model</strong><small>A runnable model of costs and revenue</small></span><span class="format">Python</span></a></li>
+      </ul>
     </div>
   </section>
 
-  <section>
-    <h2>Status</h2>
-    <p class="tight">The Delta Reign set guide is available now. The deck and metagame tools are in development. Read the research behind them below.</p>
-    <ul class="reading">
-      <li><a href="https://github.com/Oak-Main/BountyCharts/blob/main/docs/tcg-deep-dive-2026.md">The deep dive</a> — a primary-source analysis of the 2024–2026 TCG market, and the four premises in the source report that do not hold.</li>
-      <li><a href="https://github.com/Oak-Main/BountyCharts/blob/main/docs/fact-check-ledger.md">The fact-check ledger</a> — 38 claims from that report, audited one at a time: 17 confirmed, 5 overstated, 10 materially wrong, 6 unsourced.</li>
-      <li><a href="https://github.com/Oak-Main/BountyCharts/blob/main/models/unit_economics.py">The unit-economics model</a> — runnable, standard library only. Every revenue figure in the deep dive traces to an assumption you can change and re-run.</li>
-    </ul>
-    <p class="tight"><a href="https://github.com/Oak-Main/BountyCharts">All of it on GitHub →</a></p>
+  <section class="notes shell" aria-label="Project notes">
+    <div><p class="eyebrow">In development</p><h2>Riftbound deck research</h2><p>Our first deck tools focus on Riftbound. We’re studying how deck costs move alongside tournament results, and how reprints affect the gap between asking prices and sales.</p></div>
+    <div><p class="eyebrow">Editorial approach</p><h2>No buy signals</h2><p>A price is more useful when you can check its source. BountyCharts publishes research and collecting guides. We don’t issue buyout alerts, price predictions, or investment advice.</p></div>
   </section>
-
-  </main>
-
-  <footer>
+</main>
+<footer>
+  <div class="shell">
+    <div class="foot-top">
+      <a class="wordmark" href="/" aria-label="BountyCharts home"><i class="brand-mark" aria-hidden="true"></i>BountyCharts</a>
+      <nav aria-label="Legal"><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/affiliate-disclosure">Affiliate disclosure</a></nav>
+    </div>
     <p>BountyCharts is an independent project. It is not affiliated with, endorsed by, or sponsored by Riot Games, The Pokémon Company, Bandai Namco, Wizards of the Coast, or any card game publisher. All game names and trademarks belong to their respective owners.</p>
-    <p>© 2026–present Oak and Main Developers LLC. BountyCharts is a project of Oak and Main Developers LLC, Sacramento, California.</p>
-  </footer>
-
-</div>
+    <p>© 2026–present Oak and Main Developers LLC · Sacramento, California</p>
+  </div>
+</footer>
 </body>
 </html>
